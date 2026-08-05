@@ -1,7 +1,23 @@
 
-const toggle=document.querySelector('.mobile-toggle');
-const mobile=document.querySelector('.mobile-menu');
-toggle?.addEventListener('click',()=>mobile.classList.toggle('open'));
-document.querySelectorAll('[data-newsletter]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();form.querySelector('button').textContent='¡Apuntada!';form.reset();}));
-const search=document.querySelector('[data-search]');
-search?.addEventListener('submit',e=>{e.preventDefault();const q=search.querySelector('input').value.toLowerCase();if(q.includes('philips'))location.href='reviews/philips-3300-lattego.html';else if(q.includes('rivelia'))location.href='reviews/delonghi-rivelia.html';else if(q.includes('regalo'))location.href='regalos/index.html';else if(q.includes('aspir'))location.href='guias/mejores-aspiradoras-sin-cable-2026.html';else location.href='categorias/cafe.html';});
+const searchForm = document.querySelector('[data-search]');
+searchForm?.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const query = searchForm.querySelector('input').value.toLowerCase().trim();
+  const routes = [
+    ['philips', 'reviews/philips-3300-lattego.html'],
+    ['rivelia', 'reviews/delonghi-rivelia.html'],
+    ['magnifica s', 'reviews/delonghi-magnifica-s.html'],
+    ['magnifica', 'reviews/delonghi-magnifica-evo.html'],
+    ['regalo', 'regalos/index.html'],
+    ['aspirador', 'guias/mejores-aspiradoras-sin-cable-2026.html'],
+    ['cafetera', 'categorias/cafe.html']
+  ];
+  const result = routes.find(([term]) => query.includes(term));
+  window.location.href = result ? result[1] : 'reviews/index.html';
+});
+document.querySelectorAll('[data-news]').forEach(form => {
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    alert('La newsletter se conectará antes del lanzamiento público.');
+  });
+});
