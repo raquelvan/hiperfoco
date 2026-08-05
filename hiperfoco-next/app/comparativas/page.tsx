@@ -1,0 +1,4 @@
+import Link from 'next/link';
+import { reviews } from '@/data/site';
+export const metadata={title:'Comparativas'};
+export default function Comparativas(){return <><section className="textHero"><p className="eyebrow">COMPARATIVAS</p><h1>No gana el que tiene más funciones.</h1><p>Enfrentamos modelos por uso, presupuesto y mantenimiento para explicar qué compra tiene más sentido en cada caso.</p></section><section className="section"><div className="editorialList">{reviews.slice(0,2).map((r,i)=>{const o=reviews[(i+1)%reviews.length];return <article key={r.slug}><span>VS</span><div><h2>{r.brand} {r.name}<br/>frente a {o.brand} {o.name}</h2><p>{r.category==='cafe'?'Café, leche, limpieza y precio cara a cara.':'Capacidad, cocción, espacio y facilidad de uso.'}</p><Link href={`/reviews/${r.slug}/`}>Empezar por la review →</Link></div></article>})}</div></section></>}
