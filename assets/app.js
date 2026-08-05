@@ -1,5 +1,7 @@
 
-let searchData=[];
-async function initSearch(){try{const r=await fetch('/assets/search.json');searchData=await r.json()}catch(e){}}
-function setupSearch(){const input=document.getElementById('siteSearch'), box=document.getElementById('searchResults');if(!input||!box)return;const render=()=>{const q=input.value.trim().toLowerCase();if(q.length<2){box.hidden=true;box.innerHTML='';return}const hits=searchData.filter(x=>(x.title+' '+x.text+' '+x.type).toLowerCase().includes(q)).slice(0,7);box.innerHTML=hits.length?hits.map(x=>`<a href="${x.url}"><span>${x.title}</span><small>${x.type}</small></a>`).join(''):'<p>No encontramos resultados. Prueba con “cafetera”, “Philips” o “airfryer”.</p>';box.hidden=false};input.addEventListener('input',render);input.addEventListener('keydown',e=>{if(e.key==='Escape')box.hidden=true});document.addEventListener('click',e=>{if(!e.target.closest('.searchSection'))box.hidden=true})}
-document.addEventListener('DOMContentLoaded',async()=>{await initSearch();setupSearch();const btn=document.querySelector('.menuBtn'),nav=document.querySelector('.siteHeader nav');if(btn&&nav)btn.addEventListener('click',()=>nav.classList.toggle('mobileOpen'));});
+const toggle=document.querySelector('.mobile-toggle');
+const mobile=document.querySelector('.mobile-menu');
+toggle?.addEventListener('click',()=>mobile.classList.toggle('open'));
+document.querySelectorAll('[data-newsletter]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();form.querySelector('button').textContent='¡Apuntada!';form.reset();}));
+const search=document.querySelector('[data-search]');
+search?.addEventListener('submit',e=>{e.preventDefault();const q=search.querySelector('input').value.toLowerCase();if(q.includes('philips'))location.href='reviews/philips-3300-lattego.html';else if(q.includes('rivelia'))location.href='reviews/delonghi-rivelia.html';else if(q.includes('regalo'))location.href='regalos/index.html';else if(q.includes('aspir'))location.href='guias/mejores-aspiradoras-sin-cable-2026.html';else location.href='categorias/cafe.html';});

@@ -1,2 +1,3 @@
-# Hiperfoco Home V1
-Subir a GitHub y Netlify. Publish directory: .
+# Hiperfoco Sprint 1 corregido
+
+Sitio estático comprobado para Netlify. Base vacía, build vacío y publish directory `.`.
