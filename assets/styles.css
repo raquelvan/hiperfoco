@@ -104,3 +104,313 @@ h3{font-size:1.35rem;margin:0 0 7px}
  .section{padding:45px 0}.section-head{display:block}.product-img{height:280px}.transparency{grid-template-columns:1fr 1fr}
  .news form{display:block}.news input,.news button{width:100%}.news button{margin-top:8px}.footer-grid{grid-template-columns:1fr}
 }
+
+
+/* =========================================================
+   HOME APROBADA: hero compacto, sin iconos no validados
+   ni imágenes externas. Este bloque sobrescribe estilos previos.
+   ========================================================= */
+
+.hero{
+  grid-template-columns:minmax(0,1.14fr) minmax(300px,.86fr);
+  min-height:338px;
+  padding:26px 0 20px;
+  gap:34px;
+}
+.hero h1{
+  font-size:clamp(2.9rem,5.15vw,4.9rem);
+  margin:14px 0 13px;
+}
+.hero .lead{
+  max-width:620px;
+  margin:0 0 15px;
+}
+.hero-proof,
+.hero .actions{
+  display:none;
+}
+.searchbar{
+  max-width:610px;
+  margin-top:17px;
+}
+.focus-map{
+  height:290px;
+  min-width:0;
+  overflow:hidden;
+}
+.ring{
+  left:50%;
+}
+.ring.one{width:278px;height:278px}
+.ring.two{width:202px;height:202px}
+.ring.three{width:126px;height:126px}
+.core{
+  left:50%;
+  width:92px;
+  height:92px;
+  font-size:1.08rem;
+  box-shadow:0 16px 42px rgba(13,73,63,.13);
+}
+.orbit,
+.map-copy{
+  display:none;
+}
+.focus-map:before,
+.focus-map:after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.focus-map:before{
+  width:9px;
+  height:9px;
+  background:var(--green);
+  margin-left:139px;
+}
+.focus-map:after{
+  width:5px;
+  height:5px;
+  background:#90aba1;
+  margin-left:-101px;
+  margin-top:64px;
+}
+.focus-caption{
+  position:absolute;
+  left:50%;
+  bottom:6px;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  color:var(--muted);
+  font-size:.78rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.section:first-of-type{
+  padding-top:40px;
+}
+.section-head{
+  margin-bottom:21px;
+}
+.section-head p.home-intro{
+  display:none;
+}
+
+/* Producto: reserva visual local, nunca imagen rota o incorrecta */
+.product-img{
+  height:208px;
+  padding:0;
+  background:
+    radial-gradient(circle at 50% 50%,transparent 0 31px,#dce7e2 32px 33px,transparent 34px),
+    radial-gradient(circle at 50% 50%,transparent 0 66px,#e2ebe7 67px 68px,transparent 69px),
+    linear-gradient(145deg,#f5f7f6,#edf2ef);
+  position:relative;
+  overflow:hidden;
+}
+.product-img img{
+  display:none !important;
+}
+.product-img:before{
+  content:"Imagen de producto pendiente";
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:78%;
+  text-align:center;
+  color:#718079;
+  font-size:.78rem;
+  letter-spacing:.035em;
+}
+.product-img:after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:27px;
+  transform:translateX(-50%);
+  width:44px;
+  height:2px;
+  background:var(--green);
+  opacity:.55;
+}
+
+/* Categorías: sin emojis ni ilustraciones no aprobadas */
+.categories{
+  grid-template-columns:repeat(4,1fr);
+}
+.cat{
+  min-height:105px;
+  padding:18px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  text-align:left;
+  position:relative;
+}
+.cat .icon{
+  display:none;
+}
+.cat:before{
+  content:attr(data-index);
+  position:absolute;
+  top:15px;
+  left:17px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.25rem;
+  color:#9aaba4;
+}
+.cat:after{
+  content:"→";
+  color:var(--green);
+}
+
+/* Guías y regalos: diseño editorial tipográfico, sin fotos no aprobadas */
+.guide-grid{
+  grid-template-columns:repeat(4,1fr);
+}
+.guide-image{
+  display:none;
+}
+.guide-grid .card{
+  min-height:245px;
+  position:relative;
+  padding-top:12px;
+}
+.guide-grid .card:before{
+  content:"";
+  display:block;
+  height:4px;
+  margin:0 18px;
+  border-radius:99px;
+  background:var(--green);
+}
+.guide-grid .card-body{
+  padding-top:20px;
+}
+.gifts{
+  grid-template-columns:repeat(3,1fr);
+}
+.gift{
+  min-height:116px;
+  padding:20px;
+  display:flex;
+  align-items:flex-end;
+  position:relative;
+}
+.gift .guide-image{
+  display:none;
+}
+.gift:before{
+  content:"Guía de regalos";
+  position:absolute;
+  left:20px;
+  top:17px;
+  color:var(--green);
+  font-size:.69rem;
+  font-weight:850;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.gift b{
+  padding:0;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.28rem;
+  font-weight:500;
+}
+
+/* Método: un único lenguaje tipográfico, sin iconos */
+.method article{
+  min-height:185px;
+  position:relative;
+  padding-top:53px;
+}
+.method .icon{
+  display:none;
+}
+.method article:not(.dark):before{
+  content:attr(data-step);
+  position:absolute;
+  left:22px;
+  top:18px;
+  color:#92a59d;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.22rem;
+}
+.method .dark{
+  padding-top:23px;
+}
+
+/* Review interior: tampoco carga imágenes externas */
+.review-photo{
+  background:
+    radial-gradient(circle at 50% 50%,transparent 0 52px,#dce7e2 53px 54px,transparent 55px),
+    radial-gradient(circle at 50% 50%,transparent 0 105px,#e2ebe7 106px 107px,transparent 108px),
+    linear-gradient(145deg,#f5f7f6,#edf2ef);
+  position:relative;
+}
+.review-photo img{
+  display:none !important;
+}
+.review-photo:after{
+  content:"Imagen oficial pendiente";
+  color:#718079;
+  font-size:.84rem;
+  letter-spacing:.035em;
+}
+
+/* Móvil: diana limpia y reseñas visibles pronto */
+@media(max-width:1050px){
+  .hero{
+    grid-template-columns:1fr .72fr;
+    gap:18px;
+  }
+  .focus-map{
+    height:260px;
+  }
+}
+@media(max-width:760px){
+  .hero{
+    grid-template-columns:1fr;
+    padding:24px 0 8px;
+    gap:0;
+  }
+  .hero h1{
+    font-size:clamp(2.65rem,13vw,4rem);
+  }
+  .focus-map{
+    height:195px;
+    margin-top:5px;
+  }
+  .ring.one{width:184px;height:184px}
+  .ring.two{width:132px;height:132px}
+  .ring.three{width:82px;height:82px}
+  .core{
+    width:62px;
+    height:62px;
+    font-size:.78rem;
+  }
+  .focus-map:before{
+    margin-left:92px;
+  }
+  .focus-map:after{
+    margin-left:-67px;
+    margin-top:42px;
+  }
+  .focus-caption{
+    font-size:.62rem;
+  }
+  .section:first-of-type{
+    padding-top:29px;
+  }
+  .categories,
+  .guide-grid,
+  .gifts{
+    grid-template-columns:1fr;
+  }
+  .cat{
+    min-height:92px;
+  }
+}

@@ -1,0 +1,19 @@
+ACTUALIZACIÓN DE LA HOME
+
+1. Abre esta carpeta.
+2. Copia TODO lo que contiene.
+3. Pégalo dentro de tu carpeta local `hiperfoco`.
+4. Acepta reemplazar los archivos.
+5. En GitHub Desktop:
+   Summary: Ajustar Home y eliminar imágenes no aprobadas
+   Commit to main
+   Push origin
+
+Esta actualización:
+- comprime el hero;
+- elimina los botones del hero;
+- coloca Últimas reseñas inmediatamente después;
+- elimina iconos y emojis no aprobados;
+- elimina imágenes externas incorrectas o rotas;
+- mantiene espacios preparados para imágenes futuras;
+- corrige el solapamiento de la diana.
