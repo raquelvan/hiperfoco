@@ -11,3 +11,13 @@
 .page-hero{padding:58px 0 30px;max-width:850px}.page-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px;padding-bottom:65px}.page-card{background:#fff;border:1px solid var(--line);border-radius:21px;padding:23px;text-decoration:none}.review-page{padding:52px 0}.review-top{display:grid;grid-template-columns:1fr .8fr;gap:38px}.review-photo{height:410px;background:linear-gradient(145deg,#f5f7f6,#e9efec);border-radius:29px;padding:25px;display:grid;place-items:center;overflow:hidden}.review-photo img{width:100%;height:100%;object-fit:contain}.content-block{padding:31px 0;border-top:1px solid var(--line)}.panel{background:#fff;border:1px solid var(--line);border-radius:21px;padding:23px}.proscons{display:grid;grid-template-columns:1fr 1fr;gap:17px}
 @media(max-width:1080px){.menu{display:none}.mobile-toggle{display:block}.hero{grid-template-columns:1fr .7fr;gap:18px}.review-grid{grid-template-columns:repeat(2,1fr)}.categories{grid-template-columns:repeat(4,1fr)}.guide-grid{grid-template-columns:repeat(2,1fr)}.gifts{grid-template-columns:repeat(3,1fr)}.method{grid-template-columns:repeat(2,1fr)}.bottom{grid-template-columns:1fr}.footer-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.container{width:min(calc(100% - 24px),var(--max))}.hero{grid-template-columns:1fr;padding:22px 0 9px;gap:0}h1{font-size:clamp(2.55rem,12.5vw,3.7rem)}.focus-map{height:166px}.ring.one{width:160px;height:160px}.ring.two{width:116px;height:116px}.ring.three{width:72px;height:72px}.core{width:54px;height:54px;font-size:.7rem}.focus-map:before{left:calc(50% + 78px)}.focus-map:after{left:calc(50% - 56px)}.focus-caption{font-size:.55rem}.searchbar{display:block}.searchbar button{width:100%}.section{padding:40px 0}.hero+.section{padding-top:26px}.section-head{align-items:flex-start}.section-head>a{margin-top:10px}.review-grid,.guide-grid,.gifts,.method,.page-grid,.review-top,.proscons{grid-template-columns:1fr}.categories{grid-template-columns:repeat(2,1fr)}.cat{height:87px}.product-img{height:260px}.guide-image{height:195px}.gift-image{height:160px}.transparency{grid-template-columns:1fr 1fr}.news form{display:block}.news input,.news button{width:100%}.news button{margin-top:8px}.footer-grid{grid-template-columns:1fr}}
+
+/* Imágenes HD — no modifica el diseño aprobado */
+.product-img img,
+.guide-image img,
+.gift-image img,
+.review-photo img {
+  image-rendering: auto;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}

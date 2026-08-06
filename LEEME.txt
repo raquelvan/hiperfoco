@@ -1,18 +1,11 @@
-ACTUALIZACIÓN HOME V1.1 — CAMBIOS PEDIDOS
+ACTUALIZACIÓN DE IMÁGENES HD
 
-Copia TODO lo que contiene esta carpeta dentro de la carpeta local `hiperfoco`.
-Acepta combinar las carpetas y reemplazar los archivos.
+1. Copia todo el contenido de esta carpeta.
+2. Pégalo dentro de tu carpeta local `hiperfoco`.
+3. Acepta combinar carpetas y reemplazar archivos.
+4. En GitHub Desktop:
+   Summary: Sustituir imágenes por versiones HD
+   Commit to main
+   Push origin
 
-Cambios incluidos:
-- hero más pequeño y alineado;
-- últimas reseñas visibles antes;
-- fotos locales visibles en productos, guías y regalos;
-- categorías más cortas con los iconos de línea aprobados;
-- botones “Ver todas” separados de los títulos;
-- bloque “Así trabajamos” con los iconos aprobados;
-- diseño responsive conservado;
-- no se cambia la estructura aprobada.
-
-GitHub Desktop debe mostrar cambios en index.html, assets/styles.css, assets/images, reviews y VERSION_HOME.txt.
-Summary: Home V1.1 con imágenes y diseño aprobado
-Commit to main → Push origin
+Esta actualización NO cambia el diseño aprobado.
