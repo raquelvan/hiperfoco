@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   .money-grid.s2-budget .money-icon{display:none!important}
   .money-grid.s2-budget h3{font-size:.98rem!important;margin:0 0 4px!important}
   .money-grid.s2-budget p{font-size:.73rem!important;line-height:1.4!important;margin:0!important}
+  #resumen,#indice,#mejor-peor,#comparativa,#faq,#precios{scroll-margin-top:132px}
   @media(max-width:700px){
     .s2-price-layout{grid-template-columns:1fr;padding:11px}
     .s2-price-summary{padding:14px}
@@ -77,6 +78,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     .money-grid.s2-budget .money{padding:10px 12px!important}
     .money-grid.s2-budget h3{font-size:.92rem!important}
     .money-grid.s2-budget p{font-size:.71rem!important}
+    #resumen,#indice,#mejor-peor,#comparativa,#faq,#precios{scroll-margin-top:112px}
   }`;
   document.head.appendChild(style);
 
