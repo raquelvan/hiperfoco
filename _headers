@@ -1,0 +1,8 @@
+/reviews/*
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/assets/product-review.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/assets/app.js
+  Cache-Control: no-cache, no-store, must-revalidate
