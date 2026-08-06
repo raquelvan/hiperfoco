@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(hero){
     const actions=hero.querySelector('.review-actions');
     if(actions){
-      actions.innerHTML='<a class="buy" href="#comparativa">Comparar →</a><a class="compare-button" href="#precios">Ver mejor precio →</a>';
+      actions.innerHTML='<a class="buy" href="#precios">Ver mejor precio →</a><a class="compare-button" href="#comparativa">Comparar →</a>';
     }
   }
 
@@ -130,12 +130,21 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   if(hero&&prices)hero.insertAdjacentElement('afterend',prices);
   let cursor=prices;
-  [index,pros,verdict,nobody,faq,comparison,budget,finalCta].forEach(section=>{
+  [index,pros,verdict,nobody,comparison,faq,budget,finalCta].forEach(section=>{
     if(section&&cursor){cursor.insertAdjacentElement('afterend',section);cursor=section;}
   });
   if(anchor&&prices)prices.insertAdjacentElement('afterend',anchor);
 
   nobody?.querySelector('.review-card.nobody')?.classList.add('s2-compact');
+
+  const faqCard=faq?.querySelector('.faq');
+  if(faqCard&&faqCard.querySelectorAll('details').length<6){
+    faqCard.insertAdjacentHTML('beforeend',`
+      <details><summary>¿Qué café en grano va mejor con la De’Longhi Magnifica Evo?</summary><p>Funciona mejor con granos de tueste natural o medio y poco aceitosos. Los granos muy oscuros o brillantes pueden dejar más residuos en el molinillo y obligar a limpiar con mayor frecuencia.</p></details>
+      <details><summary>¿Cada cuánto hay que descalcificar la Magnifica Evo?</summary><p>Depende de la dureza del agua y del uso. La propia cafetera avisa cuando toca hacerlo. Usar un filtro de agua y configurar correctamente la dureza ayuda a espaciar el proceso y protege el circuito interno.</p></details>
+      <details><summary>¿Hace mucho ruido al moler el café?</summary><p>El molinillo se escucha durante unos segundos, como en la mayoría de cafeteras superautomáticas. No es silenciosa, pero el ruido es breve y normalmente no resulta molesto para el uso diario.</p></details>
+    `);
+  }
 
   const moneyGrid=budget?.querySelector('.money-grid');
   if(moneyGrid){
