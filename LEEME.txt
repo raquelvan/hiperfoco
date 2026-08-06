@@ -1,11 +1,10 @@
-ACTUALIZACIÓN DE IMÁGENES HD
+HIPERFOCO · SPRINT 2
 
-1. Copia todo el contenido de esta carpeta.
-2. Pégalo dentro de tu carpeta local `hiperfoco`.
-3. Acepta combinar carpetas y reemplazar archivos.
-4. En GitHub Desktop:
-   Summary: Sustituir imágenes por versiones HD
-   Commit to main
-   Push origin
+1. Abre esta carpeta.
+2. Copia TODO lo que contiene.
+3. Pégalo dentro de tu carpeta local hiperfoco.
+4. Acepta combinar carpetas y reemplazar archivos.
+5. GitHub Desktop: Summary = Sprint 2 - Home y reviews definitivas
+6. Commit to main y Push origin.
 
-Esta actualización NO cambia el diseño aprobado.
+Netlify: Base vacía, Build command vacío, Publish directory .
