@@ -1,3 +1,23 @@
+(()=>{
+  const reviewData=document.getElementById('review-data');
+  if(!reviewData||location.pathname.endsWith('/reviews/delonghi-magnifica-evo.html'))return;
+  const savedReviewData=reviewData.textContent;
+  window.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{
+      if(window.__HIPERFOCO_FINAL_REVIEW__)return;
+      window.__HIPERFOCO_FINAL_REVIEW__=true;
+      const data=document.createElement('script');
+      data.id='review-data';
+      data.type='application/json';
+      data.textContent=savedReviewData;
+      document.body.appendChild(data);
+      const script=document.createElement('script');
+      script.src='../assets/product-review-final-20260806.js?v=20260806-1933';
+      document.body.appendChild(script);
+    },0);
+  },{once:true});
+})();
+
 (()=>{window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','G-CPG0BGWBCM');const ga=document.createElement('script');ga.async=true;ga.src='https://www.googletagmanager.com/gtag/js?id=G-CPG0BGWBCM';document.head.appendChild(ga);})();
 
 document.addEventListener('DOMContentLoaded',()=>{
