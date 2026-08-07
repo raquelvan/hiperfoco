@@ -1,4 +1,4 @@
-(()=>{const l=document.createElement('link');l.rel='icon';l.href='/favicon.ico';document.head.appendChild(l);})();
+(()=>{document.querySelectorAll('link[rel~="icon"]').forEach(n=>n.remove());const svg=document.createElement('link');svg.rel='icon';svg.type='image/svg+xml';svg.href='/favicon.svg?v=20260807-2';document.head.appendChild(svg);const ico=document.createElement('link');ico.rel='shortcut icon';ico.type='image/x-icon';ico.href='/favicon.ico?v=20260807-2';document.head.appendChild(ico);})();
 (()=>{
   const reviewData=document.getElementById('review-data');
   if(!reviewData||location.pathname.endsWith('/reviews/delonghi-magnifica-evo.html'))return;
