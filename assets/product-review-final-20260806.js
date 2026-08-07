@@ -64,3 +64,22 @@
   const b=document.querySelector('[data-menu]'),m=document.querySelector('[data-mobile]');
   b?.addEventListener('click',()=>{const open=m.classList.toggle('open');b.setAttribute('aria-expanded',String(open));});
 })();
+
+(()=>{
+  const slug=location.pathname.split('/').pop().replace('.html','');
+  const mediaMarktAffiliate={
+    'delonghi-magnifica-s':'https://clk.tradedoubler.com/click?p=270504&a=3493954&epi=review-magnifica-s&url=https%3A%2F%2Fwww.mediamarkt.es%2Fes%2Fproduct%2F_cafetera-superautom%25C3%25A1tica-de-longhi-magnifica-s-ecam-22-113-b-1450-w-1-8-l-250-g-13-programas-negro-1468539.HTML',
+    'delonghi-rivelia':'https://clk.tradedoubler.com/click?p=270504&a=3493954&epi=review-rivelia&url=https%3A%2F%2Fwww.mediamarkt.es%2Fes%2Fproduct%2F_cafetera-superautomatica-de-longhi-rivelia-exam44035b-19-bar-1450-w-2-tazas-pantalla-tactil-deposito-leche-negro-1562096.html',
+    'philips-5500-lattego':'https://clk.tradedoubler.com/click?p=270504&a=3493954&epi=review-phillips-5500&url=https%3A%2F%2Fwww.mediamarkt.es%2Fes%2Fproduct%2F_cafetera-superautomatica-philips-5500-series-ep5541-or-15-bar-1500-w-deposito-18-l-deposito-leche-026-l-2-tazas-negro-1607194.html',
+    'nespresso-vertuo-plus':'https://clk.tradedoubler.com/click?p=270504&a=3493954&epi=review-vertuo&url=https%3A%2F%2Fwww.mediamarkt.es%2Fes%2Fproduct%2F_cafetera-de-c%25C3%25A1psulas-de-longhi-vertuoplus-env150-r-nespresso-1260-w-1-1-l-con-c%25C3%25A1psulas-monodosis-3-tama%25C3%25B1os-rojo-1504822.html',
+    'ninja-af400':'https://clk.tradedoubler.com/click?p=270504&a=3493954&epi=review-ninja-airfryer&url=https%3A%2F%2Fwww.mediamarkt.es%2Fes%2Fproduct%2F_freidora-de-aire-ninja-af400euwh-2470-w-blanco-144881404.html'
+  };
+  const url=mediaMarktAffiliate[slug];
+  if(!url)return;
+  document.querySelectorAll('#precios .s2-offer').forEach(offer=>{
+    if(offer.querySelector('b')?.textContent.trim()==='MediaMarkt'){
+      const a=offer.querySelector('a');
+      if(a){a.href=url;a.setAttribute('rel','nofollow sponsored noopener');}
+    }
+  });
+})();
