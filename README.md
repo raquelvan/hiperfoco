@@ -1,11 +1,7 @@
-# Hiperfoco · Sprint 1 definitivo
+# Hiperfoco
 
-Copia todo el contenido de esta carpeta dentro de tu repositorio local `hiperfoco`.
+Sitio editorial de reviews, comparativas, guías y regalos.
 
-Netlify:
-- Base directory: vacío
-- Build command: vacío
-- Publish directory: .
+## SEO/GEO técnico
 
-Las imágenes de producto se cargan desde las webs oficiales de sus fabricantes.
-Antes del lanzamiento comercial conviene confirmar los permisos de reutilización de imágenes.
+Los despliegues de Netlify ejecutan `scripts/seo-build.mjs` para normalizar metatítulos, metadescripciones, canonicals, Open Graph, Twitter Cards, robots y datos estructurados sin modificar el contenido visible ni el diseño.
