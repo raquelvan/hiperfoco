@@ -1,3 +1,4 @@
+(()=>{const l=document.createElement('link');l.rel='icon';l.href='/favicon.ico';document.head.appendChild(l);})();
 (()=>{
   const reviewData=document.getElementById('review-data');
   if(!reviewData||location.pathname.endsWith('/reviews/delonghi-magnifica-evo.html'))return;
