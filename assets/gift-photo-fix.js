@@ -18,7 +18,14 @@
     @media(max-width:700px){.gift4-media img{padding:12px!important}}
   `;
   document.head.appendChild(style);
+  function cleanInternalLabels(){
+    document.querySelectorAll('.s3-label').forEach(el=>{
+      const t=(el.textContent||'').trim();
+      if(/sprint\s*4/i.test(t)) el.textContent=t.replace(/\s*[·•-]?\s*sprint\s*4/ig,'').trim();
+    });
+  }
   function apply(){
+    cleanInternalLabels();
     document.querySelectorAll('.gift4-product').forEach(card=>{
       const name=card.querySelector('h3')?.textContent.trim();
       const src=photos[name];
