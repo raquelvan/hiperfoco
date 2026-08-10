@@ -3,6 +3,7 @@ import path from 'node:path';
 
 const ROOT=process.cwd();
 const tag='<script defer src="/assets/weekly-prices.js?v=20260810"></script>';
+const DATE='2026-08-10';
 
 function walk(dir){
   for(const ent of fs.readdirSync(dir,{withFileTypes:true})){
@@ -19,5 +20,15 @@ function walk(dir){
     }
   }
 }
+
+function updateSitemap(){
+  const file=path.join(ROOT,'sitemap.xml');
+  if(!fs.existsSync(file))return;
+  let xml=fs.readFileSync(file,'utf8');
+  xml=xml.replace(/<url><loc>(https:\/\/hiperfoco\.eu\/(?:reviews|regalos)\/[^<]+\.html)<\/loc><lastmod>[^<]+<\/lastmod><\/url>/g,(m,url)=>`<url><loc>${url}</loc><lastmod>${DATE}</lastmod></url>`);
+  fs.writeFileSync(file,xml);
+}
+
 walk(ROOT);
-console.log('Capa semanal de precios inyectada en reviews y guías de regalos.');
+updateSitemap();
+console.log('Capa semanal de precios inyectada y lastmod actualizado en reviews y guías de regalos.');
