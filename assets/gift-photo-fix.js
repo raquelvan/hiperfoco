@@ -9,22 +9,27 @@
     'JBL Clip 5':'https://m.media-amazon.com/images/I/41jYyKRVqmL._AC_CX679_.jpg',
     'Ember Mug 2':'https://media.cdn.kaufland.de/product-images/1024x1024/1d4d4bdef81cb7263e6811318ac49a16.jpg'
   };
+  const style=document.createElement('style');
+  style.textContent=`
+    .gift4-product{background:#fff!important}
+    .gift4-media{background:#fff!important;overflow:hidden!important}
+    .gift4-media img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;background:#fff!important;mix-blend-mode:normal!important;padding:18px!important;box-sizing:border-box!important}
+    .gift4-media:not(.no-photo) span{display:none!important}
+    @media(max-width:700px){.gift4-media img{padding:12px!important}}
+  `;
+  document.head.appendChild(style);
   function apply(){
     document.querySelectorAll('.gift4-product').forEach(card=>{
       const name=card.querySelector('h3')?.textContent.trim();
       const src=photos[name];
       if(!src)return;
-      let media=card.querySelector('.gift4-media');
+      const media=card.querySelector('.gift4-media');
       if(!media)return;
       media.classList.remove('no-photo');
       let img=media.querySelector('img');
       if(!img){img=document.createElement('img');media.prepend(img);}
       if(img.dataset.realPhoto==='1')return;
-      img.dataset.realPhoto='1';
-      img.alt=name;
-      img.loading='lazy';
-      img.decoding='async';
-      img.src=src;
+      img.dataset.realPhoto='1';img.alt=name;img.loading='lazy';img.decoding='async';img.src=src;
       img.onerror=()=>{media.classList.add('no-photo');img.remove();};
     });
   }
