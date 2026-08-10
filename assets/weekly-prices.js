@@ -2,12 +2,12 @@
   const REVIEWED='10 de agosto de 2026';
   const giftPrices={
     'Amazon Echo Dot (5.ª gen)':'Ver precio',
-    'Amazon Fire TV Stick 4K':'Ver precio',
+    'Amazon Fire TV Stick 4K':'69,99 €',
     'Apple AirTag':'29,99 €',
     'Anker Nano Power Bank':'Ver precio',
     'Anker cargador Nano USB-C':'Ver precio',
     'TP-Link Tapo C200':'Ver precio',
-    'Kindle Paperwhite':'Ver precio',
+    'Kindle Paperwhite':'179,99 €',
     'JBL Clip 5':'Ver precio',
     'JBL Flip 6':'Ver precio',
     'Sony WH-CH720N':'69,00 €',
@@ -36,13 +36,13 @@
         {store:'MediaMarkt',price:'459,92 €'},
         {store:'Worten',price:'Ver precio'},
         {store:'El Corte Inglés',price:'Ver precio'},
-        {store:'Amazon',price:'Ver precio'}
+        {store:'Amazon',price:'480,01 €'}
       ]
     },
     'delonghi-magnifica-s':{
       best:'279,00 €',
       stores:[
-        {store:'Amazon',price:'Ver precio'},
+        {store:'Amazon',price:'299,99 €'},
         {store:'MediaMarkt',price:'279,00 €'},
         {store:'PcComponentes',match:'ECAM21.110',price:'Ver precio'},
         {store:'PcComponentes',match:'ECAM21.117',price:'300 €'},
@@ -53,16 +53,16 @@
       best:'519,00 €',
       stores:[
         {store:'De’Longhi',price:'Ver precio'},
-        {store:'Amazon',price:'Ver precio'},
+        {store:'Amazon',price:'519,00 €'},
         {store:'MediaMarkt',price:'519,00 €'},
         {store:'PcComponentes',price:'519,00 €'}
       ]
     },
     'philips-3300-lattego':{
-      best:'492,73 €',
+      best:'456,52 €',
       stores:[
         {store:'Philips',price:'Ver precio'},
-        {store:'Amazon',price:'Ver precio'},
+        {store:'Amazon',price:'456,52 €'},
         {store:'MediaMarkt',price:'492,73 €'},
         {store:'PcComponentes',price:'Ver precio'}
       ]
@@ -150,7 +150,7 @@
       document.querySelectorAll('a.btn-main[href="#precios"]').forEach(a=>a.textContent=`Ver mejor precio · ${cfg.best} →`);
       document.querySelectorAll('#faq details').forEach(d=>{const q=d.querySelector('summary')?.textContent||'';const p=d.querySelector('p');if(p&&/mejor precio/i.test(q))p.textContent='El precio más bajo comprobado es 388,53 € en PcComponentes, seguido de 399 € en Carrefour.';});
       document.querySelectorAll('script[type="application/ld+json"]').forEach(s=>{
-        try{const j=JSON.parse(s.textContent);const all=j['@graph']||[j];all.forEach(n=>{if(n['@type']==='Product'&&n.offers){n.offers.lowPrice='388.53';n.offers.highPrice='459.92';}if(n['@type']==='FAQPage')n.mainEntity?.forEach(q=>{if(/mejor precio/i.test(q.name||''))q.acceptedAnswer.text='El precio más bajo comprobado es 388,53 € en PcComponentes. Los precios y el stock pueden cambiar.';});});s.textContent=JSON.stringify(j);}catch{ }
+        try{const j=JSON.parse(s.textContent);const all=j['@graph']||[j];all.forEach(n=>{if(n['@type']==='Product'&&n.offers){n.offers.lowPrice='388.53';n.offers.highPrice='480.01';}if(n['@type']==='FAQPage')n.mainEntity?.forEach(q=>{if(/mejor precio/i.test(q.name||''))q.acceptedAnswer.text='El precio más bajo comprobado es 388,53 € en PcComponentes. Los precios y el stock pueden cambiar.';});});s.textContent=JSON.stringify(j);}catch{ }
       });
     }
   }
