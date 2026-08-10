@@ -1,45 +1,8 @@
 (()=>{
-  const photos={
-    'Fujifilm Instax Mini 12':'https://m.media-amazon.com/images/I/61+jaO2GeDL.jpg',
-    'Kindle Paperwhite':'https://m.media-amazon.com/images/I/81swm2WdawL._AC_SY741_.jpg',
-    'Sony WH-CH720N':'https://m.media-amazon.com/images/I/51rpbVmi9XL._AC_SL1200_.jpg',
-    'LEGO Icons Ramo de Rosas':'https://target.scene7.com/is/image/Target/GUEST_c80112c2-b2c0-415a-a0e3-2554874f19ef?qlt=80&wid=1200',
-    'Apple AirTag':'https://m.media-amazon.com/images/I/314YPlM+dcS._SL500_.jpg',
-    'Kodak Mini 2 Retro':'https://m.media-amazon.com/images/I/41j72OeBFRL._AC_CX679_.jpg',
-    'JBL Clip 5':'https://m.media-amazon.com/images/I/41jYyKRVqmL._AC_CX679_.jpg',
-    'Ember Mug 2':'https://media.cdn.kaufland.de/product-images/1024x1024/1d4d4bdef81cb7263e6811318ac49a16.jpg'
-  };
-  const style=document.createElement('style');
-  style.textContent=`
-    .gift4-product{background:#fff!important}
-    .gift4-media{background:#fff!important;overflow:hidden!important}
-    .gift4-media img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;background:#fff!important;mix-blend-mode:normal!important;padding:18px!important;box-sizing:border-box!important}
-    .gift4-media:not(.no-photo) span{display:none!important}
-    @media(max-width:700px){.gift4-media img{padding:12px!important}}
-  `;
-  document.head.appendChild(style);
-  function cleanInternalLabels(){
-    document.querySelectorAll('.s3-label').forEach(el=>{
-      const t=(el.textContent||'').trim();
-      if(/sprint\s*4/i.test(t)) el.textContent=t.replace(/\s*[·•-]?\s*sprint\s*4/ig,'').trim();
-    });
-  }
-  function apply(){
-    cleanInternalLabels();
-    document.querySelectorAll('.gift4-product').forEach(card=>{
-      const name=card.querySelector('h3')?.textContent.trim();
-      const src=photos[name];
-      if(!src)return;
-      const media=card.querySelector('.gift4-media');
-      if(!media)return;
-      media.classList.remove('no-photo');
-      let img=media.querySelector('img');
-      if(!img){img=document.createElement('img');media.prepend(img);}
-      if(img.dataset.realPhoto==='1')return;
-      img.dataset.realPhoto='1';img.alt=name;img.loading='lazy';img.decoding='async';img.src=src;
-      img.onerror=()=>{media.classList.add('no-photo');img.remove();};
-    });
-  }
-  document.addEventListener('DOMContentLoaded',()=>{apply();setTimeout(apply,100);setTimeout(apply,500);setTimeout(apply,1500);});
-  new MutationObserver(apply).observe(document.documentElement,{childList:true,subtree:true});
+ const photos={'Fujifilm Instax Mini 12':'https://m.media-amazon.com/images/I/61+jaO2GeDL.jpg','Kindle Paperwhite':'https://m.media-amazon.com/images/I/81swm2WdawL._AC_SY741_.jpg','Sony WH-CH720N':'https://m.media-amazon.com/images/I/51rpbVmi9XL._AC_SL1200_.jpg','LEGO Icons Ramo de Rosas':'https://target.scene7.com/is/image/Target/GUEST_c80112c2-b2c0-415a-a0e3-2554874f19ef?qlt=80&wid=1200','Apple AirTag':'https://m.media-amazon.com/images/I/314YPlM+dcS._SL500_.jpg','Kodak Mini 2 Retro':'https://m.media-amazon.com/images/I/41j72OeBFRL._AC_CX679_.jpg','JBL Clip 5':'https://m.media-amazon.com/images/I/41jYyKRVqmL._AC_CX679_.jpg','Ember Mug 2':'https://media.cdn.kaufland.de/product-images/1024x1024/1d4d4bdef81cb7263e6811318ac49a16.jpg','Amazon Echo Dot (5.ª gen)':'https://m.media-amazon.com/images/I/71xoR4A6q-L._AC_SL1000_.jpg','Amazon Fire TV Stick 4K':'https://m.media-amazon.com/images/I/51TjJOTfslL._AC_SL1000_.jpg','Anker Nano Power Bank':'https://m.media-amazon.com/images/I/61pUul1oDlL._AC_SL1500_.jpg','Anker cargador Nano USB-C':'https://m.media-amazon.com/images/I/51tVD2d2QmL._AC_SL1500_.jpg','TP-Link Tapo C200':'https://m.media-amazon.com/images/I/51g3R+eJmJL._AC_SL1000_.jpg','JBL Flip 6':'https://m.media-amazon.com/images/I/71H4arZ12jL._AC_SL1500_.jpg','AeroPress':'https://m.media-amazon.com/images/I/71u+LDMJQ5L._AC_SL1500_.jpg','Hario V60':'https://m.media-amazon.com/images/I/61W0xEO3eML._AC_SL1500_.jpg','Timemore C3':'https://m.media-amazon.com/images/I/61H6vCjKXQL._AC_SL1500_.jpg','Wacaco Nanopresso':'https://m.media-amazon.com/images/I/61yc+O3IuGL._AC_SL1500_.jpg','Adaptador universal SKROSS':'https://m.media-amazon.com/images/I/61WZ6tHqQyL._AC_SL1500_.jpg','Cubos organizadores BAGAIL':'https://m.media-amazon.com/images/I/81mM3kHGjHL._AC_SL1500_.jpg','Báscula digital de equipaje':'https://m.media-amazon.com/images/I/61B7l2kKQPL._AC_SL1500_.jpg','LEGO Star Wars R2-D2':'https://m.media-amazon.com/images/I/81qF8QW0WGL._AC_SL1500_.jpg','Razer BlackShark V2 X':'https://m.media-amazon.com/images/I/71R8hF+vYkL._AC_SL1500_.jpg','8BitDo Ultimate Controller':'https://m.media-amazon.com/images/I/61l7q7kXoIL._AC_SL1500_.jpg'};
+ const style=document.createElement('style');style.textContent='.gift4-product{background:#fff!important}.gift4-media{background:#fff!important;overflow:hidden!important}.gift4-media img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;background:#fff!important;mix-blend-mode:normal!important;padding:18px!important;box-sizing:border-box!important}.gift4-media:not(.no-photo) span{display:none!important}@media(max-width:700px){.gift4-media img{padding:12px!important}}';document.head.appendChild(style);
+ function enrichCards(){document.querySelectorAll('.gift4-product').forEach(card=>{const name=card.querySelector('h3')?.textContent.trim(),src=photos[name];if(!src)return;let media=card.querySelector('.gift4-media');if(!media){media=document.createElement('div');media.className='gift4-media';card.prepend(media)}let img=media.querySelector('img');if(!img){img=document.createElement('img');media.prepend(img)}if(img.dataset.realPhoto==='1')return;img.dataset.realPhoto='1';img.alt=name;img.loading='lazy';img.decoding='async';img.src=src;img.onerror=()=>{media.classList.add('no-photo');img.remove()}})}
+ function clean(){document.querySelectorAll('.s3-label').forEach(el=>{if(/sprint\s*4/i.test(el.textContent||''))el.textContent=(el.textContent||'').replace(/\s*[·•-]?\s*sprint\s*4/ig,'').trim()})}
+ function enrichFaq(){const faq=document.querySelector('.s3-faq');if(!faq||faq.dataset.geo==='1')return;faq.dataset.geo='1';const cards=[...document.querySelectorAll('.gift4-product')];if(!cards.length)return;const names=cards.slice(0,3).map(c=>c.querySelector('h3')?.textContent.trim()).filter(Boolean);const links=cards.slice(0,3).map(c=>{const n=c.querySelector('h3')?.textContent.trim(),a=c.querySelector('.gift4-buy a.aff');return n&&a?`<a href="${a.href}" target="_blank" rel="nofollow sponsored noopener">${n} en Amazon</a>`:''}).filter(Boolean);const h1=document.querySelector('h1')?.textContent||'esta guía';const qs=[['¿Cuál es la recomendación rápida de Hiperfoco? ',`Si quieres decidir rápido, nuestras primeras opciones en ${h1.toLowerCase()} son ${names.join(', ')}. Elige según compatibilidad, afición y presupuesto, no solo por el precio.`],['¿Dónde puedo comprobar el precio actual de estas ideas?',`Puedes consultar directamente ${links.join(', ')}. Revisamos los precios semanalmente, pero pueden cambiar por vendedor, stock o promoción.`],['¿Cómo saber si un regalo tecnológico es compatible?',`Comprueba el móvil, consola, conexiones o ecosistema que usa la persona. Por ejemplo, un AirTag tiene más sentido para alguien que utiliza iPhone; en gaming conviene revisar plataforma y conexión antes de comprar.`],['¿Es mejor un regalo útil o uno original?',`Para acertar suele funcionar mejor un producto útil ligado a una afición concreta. La originalidad suma cuando el regalo sigue teniendo una función clara después de abrirlo.`],['¿Cómo elegimos los productos de esta guía?',`Hiperfoco prioriza utilidad, relación entre precio y uso, compatibilidad, mantenimiento o consumibles y variedad de presupuestos. Los enlaces afiliados no cambian el criterio editorial.`]];qs.forEach(([q,a])=>faq.insertAdjacentHTML('beforeend',`<details><summary>${q.trim()}</summary><p>${a}</p></details>`));const existing=[...faq.querySelectorAll('details')].map(d=>({q:d.querySelector('summary')?.textContent.trim(),a:d.querySelector('p')?.textContent.trim()})).filter(x=>x.q&&x.a);let schema=document.createElement('script');schema.type='application/ld+json';schema.dataset.geoFaq='1';schema.textContent=JSON.stringify({'@context':'https://schema.org','@type':'FAQPage','mainEntity':existing.map(x=>({'@type':'Question','name':x.q,'acceptedAnswer':{'@type':'Answer','text':x.a}}))});document.head.appendChild(schema)}
+ function run(){clean();enrichCards();enrichFaq()}document.addEventListener('DOMContentLoaded',()=>{run();setTimeout(run,150);setTimeout(run,700);setTimeout(run,1600)});new MutationObserver(()=>{clean();enrichCards()}).observe(document.documentElement,{childList:true,subtree:true});
 })();
