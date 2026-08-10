@@ -80,3 +80,24 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   finalCta?.querySelector('a')?.setAttribute('href','#precios');
 });
+
+(()=>{
+  function fixHomeReviewLinks(){
+    if(location.pathname!=='/'&&!location.pathname.endsWith('/index.html'))return;
+    document.querySelectorAll('a.section-link').forEach(a=>{
+      const txt=(a.textContent||'').toLowerCase();
+      if(txt.includes('reseña')){
+        a.href='/reviews/';
+        a.style.pointerEvents='auto';
+        a.style.position='relative';
+        a.style.zIndex='20';
+        if(!a.dataset.fixedReviewLink){
+          a.dataset.fixedReviewLink='1';
+          a.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.location.assign('/reviews/');});
+        }
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded',fixHomeReviewLinks);
+  window.addEventListener('load',fixHomeReviewLinks);
+})();
