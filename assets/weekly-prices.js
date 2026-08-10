@@ -77,20 +77,20 @@
       ]
     },
     'nespresso-vertuo-plus':{
-      best:'124,70 €',
+      best:'Ver precio',
       stores:[
         {store:'Amazon',price:'Ver precio'},
         {store:'Krups',price:'Ver precio'},
-        {store:'MediaMarkt',price:'124,70 €'},
+        {store:'MediaMarkt',price:'Ver precio'},
         {store:'Carrefour',price:'Ver precio'}
       ]
     },
     'ninja-af400':{
-      best:'216,94 €',
+      best:'236,66 €',
       stores:[
         {store:'Ninja',price:'Ver precio'},
         {store:'Amazon',price:'Ver precio'},
-        {store:'MediaMarkt',price:'216,94 €'},
+        {store:'MediaMarkt',price:'236,66 €'},
         {store:'PcComponentes',price:'239,89 €'}
       ]
     }
@@ -156,5 +156,5 @@
   }
 
   function run(){updateGift();updateReview();}
-  document.addEventListener('DOMContentLoaded',()=>{run();setTimeout(run,50);setTimeout(run,250);});
+  document.addEventListener('DOMContentLoaded',()=>{run();setTimeout(run,50);setTimeout(run,250);setTimeout(run,1000);setTimeout(run,3000);});
 })();
