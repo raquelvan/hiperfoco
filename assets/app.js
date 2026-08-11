@@ -52,7 +52,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   let prices=document.querySelector('#precios');
   if(hero&&!prices){prices=document.createElement('section');prices.id='precios';prices.className='review-shell review-section s2-price-section';prices.innerHTML=`<div class="review-card s2-price-layout"><div class="s2-price-summary"><span>Comparador actualizado</span><h2>Mejor precio ahora</h2><strong>379,99 €</strong><p>Mismo modelo <b>ECAM290.61.SB</b></p><small>Comprobado el 6 de agosto de 2026. Precio y stock pueden cambiar.</small></div><div class="s2-offers"><article class="s2-offer best"><div><em>Mejor precio</em><b>PcComponentes</b><small>Vendido y enviado por PcComponentes</small></div><strong>379,99 €</strong><a data-affiliate-slot="pccomponentes-magnifica-evo" href="https://www.pccomponentes.com/delonghi-magnifica-evo-cafetera-superautomatica-con-deposito-de-leche-15-bares-plateada-5-bebidas" target="_blank" rel="nofollow sponsored noopener">Ver oferta →</a></article><article class="s2-offer"><div><b>Carrefour</b><small>Vendido por Carrefour · envío gratis</small></div><strong>399 €</strong><a data-affiliate-slot="carrefour-magnifica-evo" href="https://www.carrefour.es/cafetera-superautomatica-delonghi-ecam29061sb/VC4A-17955283/p" target="_blank" rel="nofollow sponsored noopener">Ver oferta →</a></article><article class="s2-offer"><div><b>MediaMarkt</b><small>Consulta precio y vendedor</small></div><strong>Ver precio</strong><a data-affiliate-slot="mediamarkt-magnifica-evo" href="https://www.mediamarkt.es/es/product/_cafetera-express-ecam29061sb-de-longhi-150-barbar-1450-w-2-tazas-multicolor-98981528.html" target="_blank" rel="nofollow sponsored noopener">Consultar →</a></article><article class="s2-offer"><div><b>Worten</b><small>Vendido por Worten</small></div><strong>569 €</strong><a data-affiliate-slot="worten-magnifica-evo" href="https://www.worten.es/productos/cafetera-automatico-delonghi-magnifica-evo-ecam290-61-sb-7533123" target="_blank" rel="nofollow sponsored noopener">Ver oferta →</a></article><article class="s2-offer"><div><b>El Corte Inglés</b><small>Consulta disponibilidad</small></div><strong>Ver precio</strong><a data-affiliate-slot="eci-magnifica-evo" href="https://www.elcorteingles.es/dia-del-padre/A43102936-8004399021402-pr-cafetera-superautomatica-delonghi-magnifica-evo-ecam29061sb-con-molinillo-incorporado-gris/" target="_blank" rel="nofollow sponsored noopener">Consultar →</a></article></div></div>`;}
-
   const sections=[...document.querySelectorAll('main > section')];
   const byHeading=text=>sections.find(section=>section.querySelector('h2')?.textContent.trim().startsWith(text));
   const index=byHeading('Índice Hiperfoco');
@@ -100,4 +99,29 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   document.addEventListener('DOMContentLoaded',fixHomeReviewLinks);
   window.addEventListener('load',fixHomeReviewLinks);
+})();
+
+(()=>{
+  function makeReviewCarouselWork(){
+    if(location.pathname!=='/'&&!location.pathname.endsWith('/index.html'))return;
+    const track=document.querySelector('.review-grid');
+    if(!track||track.dataset.functionalCarousel==='1')return;
+    track.dataset.functionalCarousel='1';
+    const extra=[
+      {href:'reviews/philips-5500-lattego.html',img:'https://www.philips.es/c-dam/b2c/category-pages/Household/coffee/fully-automatic-espresso-machines/EP5544_80/EP5544_80-IMS-es_ES.png',badge:'Más variedad',name:'Philips Serie 5500 LatteGo',text:'Muchas recetas y perfiles para hogares con gustos distintos.',score:'8,9'},
+      {href:'reviews/nespresso-vertuo-plus.html',img:'https://dam.elcorteingles.es/producto/www-8004399333369-00.jpg',badge:'Mejor cápsulas',name:'Nespresso Vertuo Plus',text:'Rapidez, bebidas largas y una experiencia muy sencilla.',score:'8,2'},
+      {href:'reviews/ninja-af400.html',img:'https://ninjahomeserbia.rs/wp-content/uploads/2025/03/Ninja-AF400UK-EU-Front-Hero-scaled.jpg',badge:'Mejor para familias',name:'Ninja Foodi MAX AF400',text:'Dos cajones grandes para cocinar dos preparaciones a la vez.',score:'8,7'}
+    ];
+    extra.forEach(r=>{if(track.querySelector(`a[href="${r.href}"]`))return;const a=document.createElement('a');a.className='card';a.href=r.href;a.innerHTML=`<div class="product-media"><img src="${r.img}" alt="${r.name}" loading="lazy" decoding="async"></div><div class="card-body"><span class="badge">${r.badge}</span><h3>${r.name}</h3><p>${r.text}</p><div class="rating">★★★★★ <strong>${r.score}</strong></div></div>`;track.appendChild(a);});
+    track.style.display='flex';
+    track.style.overflowX='auto';
+    track.style.scrollBehavior='smooth';
+    track.style.scrollSnapType='x mandatory';
+    track.style.scrollbarWidth='none';
+    track.style.gridTemplateColumns='none';
+    const sizeCards=()=>{const mobile=window.matchMedia('(max-width:760px)').matches,tablet=window.matchMedia('(max-width:1080px)').matches;track.querySelectorAll(':scope > .card').forEach(card=>{card.style.flex=mobile?'0 0 100%':tablet?'0 0 calc((100% - 18px)/2)':'0 0 calc((100% - 54px)/4)';card.style.scrollSnapAlign='start';});};
+    sizeCards();window.addEventListener('resize',sizeCards,{passive:true});
+  }
+  document.addEventListener('DOMContentLoaded',makeReviewCarouselWork);
+  window.addEventListener('load',makeReviewCarouselWork);
 })();
