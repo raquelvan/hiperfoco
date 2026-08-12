@@ -1,32 +1,31 @@
 {
-  "version": 1,
-  "updatedAt": "2026-08-12T11:37:00+02:00",
+  "version": 2,
+  "updatedAt": "2026-08-12T11:55:00+02:00",
   "products": {
-    "philips-5500": {
-      "name": "Philips Serie 5500 LatteGo",
-      "model": "EP5544/80",
-      "category": "cafe",
-      "review": "/reviews/philips-5500-lattego.html",
-      "image": "",
-      "affiliate": {"amazon": "", "tradedoubler": ""}
-    },
-    "razer-blackshark-v2-x": {
-      "name": "Razer BlackShark V2 X",
-      "category": "gaming",
-      "image": "",
-      "affiliate": {"amazon": "https://www.amazon.es/dp/B09BD75Y21?tag=hiperfoco-21", "tradedoubler": ""}
-    },
-    "8bitdo-ultimate": {
-      "name": "8BitDo Ultimate Controller",
-      "category": "gaming",
-      "image": "",
-      "affiliate": {"amazon": "https://www.amazon.es/dp/B0DR8Y5W6Z?tag=hiperfoco-21", "tradedoubler": ""}
-    },
-    "lego-r2d2": {
-      "name": "LEGO Star Wars R2-D2",
-      "category": "gaming",
-      "image": "",
-      "affiliate": {"amazon": "https://www.amazon.es/dp/B08Z8JLGZC?tag=hiperfoco-21", "tradedoubler": ""}
-    }
+    "philips-5500": {"name":"Philips Serie 5500 LatteGo","model":"EP5544/80","category":"cafe","review":"/reviews/philips-5500-lattego.html","image":"","affiliate":{"amazon":"","tradedoubler":""}},
+    "echo-dot-5": {"name":"Amazon Echo Dot (5.ª gen)","asin":"B0BF2HCMJB","category":"tecnologia","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0BF2HCMJB?tag=hiperfoco-21","tradedoubler":""}},
+    "fire-tv-stick-4k": {"name":"Amazon Fire TV Stick 4K","asin":"B0CN41GMDK","category":"tecnologia","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0CN41GMDK?tag=hiperfoco-21","tradedoubler":""}},
+    "apple-airtag": {"name":"Apple AirTag","asin":"B0GJTFY58R","category":"viajes","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0GJTFY58R?tag=hiperfoco-21","tradedoubler":""}},
+    "anker-nano-power-bank": {"name":"Anker Nano Power Bank","asin":"B0D5CLSMFB","category":"tecnologia","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0D5CLSMFB?tag=hiperfoco-21","tradedoubler":""}},
+    "anker-nano-charger": {"name":"Anker cargador Nano USB-C","asin":"B0B2MLRF93","category":"tecnologia","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0B2MLRF93?tag=hiperfoco-21","tradedoubler":""}},
+    "tapo-c200": {"name":"TP-Link Tapo C200","asin":"B07XLML2YS","category":"tecnologia","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B07XLML2YS?tag=hiperfoco-21","tradedoubler":""}},
+    "kindle-paperwhite": {"name":"Kindle Paperwhite","asin":"B0CFPWLGF2","category":"tecnologia","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0CFPWLGF2?tag=hiperfoco-21","tradedoubler":""}},
+    "jbl-clip-5": {"name":"JBL Clip 5","asin":"B0CTP56C5R","category":"tecnologia","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0CTP56C5R?tag=hiperfoco-21","tradedoubler":""}},
+    "jbl-flip-6": {"name":"JBL Flip 6","asin":"B09HGRXXTM","category":"tecnologia","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B09HGRXXTM?tag=hiperfoco-21","tradedoubler":""}},
+    "sony-wh-ch720n": {"name":"Sony WH-CH720N","asin":"B0BTDT8V59","category":"tecnologia","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0BTDT8V59?tag=hiperfoco-21","tradedoubler":""}},
+    "instax-mini-12": {"name":"Fujifilm Instax Mini 12","asin":"B0C2J34N8G","category":"viajes","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0C2J34N8G?tag=hiperfoco-21","tradedoubler":""}},
+    "lego-roses": {"name":"LEGO Icons Ramo de Rosas","asin":"B0CGY4X222","category":"default","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0CGY4X222?tag=hiperfoco-21","tradedoubler":""}},
+    "kodak-mini-2-retro": {"name":"Kodak Mini 2 Retro","asin":"B08BL93M5R","category":"viajes","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B08BL93M5R?tag=hiperfoco-21","tradedoubler":""}},
+    "ember-mug-2": {"name":"Ember Mug 2","asin":"B07NQNQ14G","category":"cafe","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B07NQNQ14G?tag=hiperfoco-21","tradedoubler":""}},
+    "aeropress": {"name":"AeroPress","asin":"B000GXZ2GS","category":"cafe","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B000GXZ2GS?tag=hiperfoco-21","tradedoubler":""}},
+    "hario-v60": {"name":"Hario V60","asin":"B00B7XJVUE","category":"cafe","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B00B7XJVUE?tag=hiperfoco-21","tradedoubler":""}},
+    "timemore-c3": {"name":"Timemore C3","asin":"B0CNG5JXLH","category":"cafe","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0CNG5JXLH?tag=hiperfoco-21","tradedoubler":""}},
+    "wacaco-nanopresso": {"name":"Wacaco Nanopresso","asin":"B0797T2FYL","category":"cafe","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0797T2FYL?tag=hiperfoco-21","tradedoubler":""}},
+    "skross-adapter": {"name":"Adaptador universal SKROSS","asin":"B01FSMUDPQ","category":"viajes","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B01FSMUDPQ?tag=hiperfoco-21","tradedoubler":""}},
+    "bagail-cubes": {"name":"Cubos organizadores BAGAIL","asin":"B08S3BQH33","category":"viajes","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B08S3BQH33?tag=hiperfoco-21","tradedoubler":""}},
+    "luggage-scale": {"name":"Báscula digital de equipaje","asin":"B0186K8T9O","category":"viajes","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0186K8T9O?tag=hiperfoco-21","tradedoubler":""}},
+    "lego-r2d2": {"name":"LEGO Star Wars R2-D2","asin":"B08Z8JLGZC","category":"gaming","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B08Z8JLGZC?tag=hiperfoco-21","tradedoubler":""}},
+    "razer-blackshark-v2-x": {"name":"Razer BlackShark V2 X","asin":"B09BD75Y21","category":"gaming","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B09BD75Y21?tag=hiperfoco-21","tradedoubler":""}},
+    "8bitdo-ultimate": {"name":"8BitDo Ultimate Controller","asin":"B0DR8Y5W6Z","category":"gaming","image":"","affiliate":{"amazon":"https://www.amazon.es/dp/B0DR8Y5W6Z?tag=hiperfoco-21","tradedoubler":""}}
   }
 }
