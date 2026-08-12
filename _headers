@@ -6,3 +6,9 @@
 
 /assets/app.js
   Cache-Control: no-cache, no-store, must-revalidate
+
+/assets/products.json
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/assets/affiliate-catalog.js
+  Cache-Control: no-cache, no-store, must-revalidate
