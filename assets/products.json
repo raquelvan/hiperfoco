@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "updatedAt": "2026-08-12",
+  "products": {
+    "philips-5500": {
+      "name": "Philips Serie 5500 LatteGo",
+      "model": "EP5544/80",
+      "category": "cafe",
+      "review": "/reviews/philips-5500-lattego.html",
+      "image": "",
+      "affiliate": {"amazon": "", "tradedoubler": ""}
+    },
+    "razer-blackshark-v2-x": {
+      "name": "Razer BlackShark V2 X",
+      "category": "gaming",
+      "image": "",
+      "affiliate": {"amazon": "https://www.amazon.es/dp/B09BD75Y21?tag=hiperfoco-21", "tradedoubler": ""}
+    },
+    "8bitdo-ultimate": {
+      "name": "8BitDo Ultimate Controller",
+      "category": "gaming",
+      "image": "",
+      "affiliate": {"amazon": "https://www.amazon.es/dp/B0DR8Y5W6Z?tag=hiperfoco-21", "tradedoubler": ""}
+    },
+    "lego-r2d2": {
+      "name": "LEGO Star Wars R2-D2",
+      "category": "gaming",
+      "image": "",
+      "affiliate": {"amazon": "https://www.amazon.es/dp/B08Z8JLGZC?tag=hiperfoco-21", "tradedoubler": ""}
+    }
+  }
+}
