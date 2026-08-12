@@ -9,6 +9,7 @@ const amazonClientId=process.env.AMAZON_CREATORS_CLIENT_ID||'';
 const amazonClientSecret=process.env.AMAZON_CREATORS_CLIENT_SECRET||'';
 const marketplace='www.amazon.es';
 let amazonAccessToken='';
+let tdFeeds=[];
 
 async function getAmazonToken(){
   if(!amazonClientId||!amazonClientSecret)return '';
@@ -36,14 +37,53 @@ async function amazonItem(asin){
   return data.itemsResult?.items?.[0]||data.items?.[0]||null;
 }
 
-async function tdSearch(q){
-  if(!tdToken)return null;
-  const url=`https://api.tradedoubler.com/1.0/products.json;q=${encodeURIComponent(q)};limit=5?token=${encodeURIComponent(tdToken)}`;
-  const res=await fetch(url,{headers:{accept:'application/json'}});
-  if(!res.ok)throw new Error(`Tradedoubler ${res.status}`);
+async function getTdFeeds(){
+  if(!tdToken)return [];
+  const res=await fetch(`https://api.tradedoubler.com/1.0/productFeeds.json?token=${encodeURIComponent(tdToken)}`,{headers:{accept:'application/json'}});
+  if(!res.ok)throw new Error(`Tradedoubler feeds ${res.status}`);
   const data=await res.json();
-  const list=data.products||data.product||[];
-  return Array.isArray(list)?list[0]||null:null;
+  return (data.feeds||[]).filter(f=>f.active!==false&&f.visible!==false&&Number(f.numberOfProducts||0)>0);
+}
+
+function norm(v=''){
+  return String(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+}
+
+function scoreCandidate(item,product){
+  const hay=norm(`${item.name||''} ${item.description||''} ${item.sku||''}`);
+  const required=norm(`${product.name||''} ${product.model||''}`).split(' ').filter(t=>t.length>2);
+  let score=required.reduce((s,t)=>s+(hay.includes(t)?2:0),0);
+  if(product.model&&hay.includes(norm(product.model)))score+=12;
+  if(item.availability&&/stock|available|dispon/i.test(String(item.availability)))score+=1;
+  return score;
+}
+
+async function tdSearch(product){
+  if(!tdToken||!tdFeeds.length)return null;
+  const q=[product.name,product.model].filter(Boolean).join(' ');
+  const candidates=[];
+  for(const feed of tdFeeds){
+    const url=`https://api.tradedoubler.com/1.0/products.json;fid=${encodeURIComponent(feed.feedId)};q=${encodeURIComponent(q)};limit=10?token=${encodeURIComponent(tdToken)}`;
+    try{
+      const res=await fetch(url,{headers:{accept:'application/json'}});
+      if(!res.ok)continue;
+      const data=await res.json();
+      const list=Array.isArray(data.products)?data.products:[];
+      for(const item of list)candidates.push({...item,_feed:feed});
+    }catch{}
+  }
+  candidates.sort((a,b)=>scoreCandidate(b,product)-scoreCandidate(a,product));
+  const best=candidates[0];
+  return best&&scoreCandidate(best,product)>0?best:null;
+}
+
+if(tdToken){
+  try{
+    tdFeeds=await getTdFeeds();
+    console.log(`Tradedoubler feeds discovered: ${tdFeeds.length}`);
+  }catch(err){
+    console.warn(`Tradedoubler feed discovery failed: ${err.message}`);
+  }
 }
 
 for(const product of Object.values(catalog.products)){
@@ -58,11 +98,14 @@ for(const product of Object.values(catalog.products)){
   }catch(err){console.warn(`Amazon sync skipped for ${product.name}: ${err.message}`)}
 
   try{
-    const td=await tdSearch([product.name,product.model].filter(Boolean).join(' '));
+    const td=await tdSearch(product);
     if(td){
-      product.image=product.image||td.productImage?.url||td.imageUrl||'';
-      product.affiliate.tradedoubler=td.productUrl||td.url||product.affiliate.tradedoubler;
-      product.price=product.price||td.price?.displayPrice||td.price?.value;
+      product.image=product.image||td.productImage?.url||'';
+      product.affiliate.tradedoubler=td.productUrl||product.affiliate.tradedoubler||'';
+      product.price=product.price||td.price?.displayPrice||td.price?.value||td.price||'';
+      product.merchant=td.programName||td._feed?.programs?.[0]?.name||td._feed?.name||'';
+      product.feedId=td.feedId||td._feed?.feedId||null;
+      product.availability=td.availability||'';
       if(!product.source)product.source='tradedoubler';
     }
   }catch(err){console.warn(`Tradedoubler sync skipped for ${product.name}: ${err.message}`)}
@@ -73,5 +116,6 @@ for(const product of Object.values(catalog.products)){
 }
 
 catalog.updatedAt=new Date().toISOString();
+catalog.integrations={amazon:Boolean(amazonClientId&&amazonClientSecret),tradedoubler:Boolean(tdToken),tradedoublerFeeds:tdFeeds.length};
 fs.writeFileSync(file,JSON.stringify(catalog,null,2)+'\n');
-console.log(`Affiliate sync complete. Amazon=${Boolean(amazonClientId&&amazonClientSecret)} Tradedoubler=${Boolean(tdToken)}`);
+console.log(`Affiliate sync complete. Amazon=${Boolean(amazonClientId&&amazonClientSecret)} Tradedoubler=${Boolean(tdToken)} feeds=${tdFeeds.length}`);
