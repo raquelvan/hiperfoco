@@ -1,3 +1,4 @@
+# Affiliate price sync trigger: 2026-08-13
 [build]
   command = "node scripts/affiliate-sync.mjs && node scripts/inject-gift-fallback.mjs && node scripts/seo-build.mjs && node scripts/weekly-inject.mjs && node scripts/inject-affiliate-catalog.mjs && node scripts/inject-product-image-fixes.mjs"
   publish = "."
