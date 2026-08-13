@@ -1,0 +1,8 @@
+import fs from 'node:fs';
+import path from 'node:path';
+const root=process.cwd();
+const skip=new Set(['contacto.html','gracias-contacto.html']);
+function walk(dir){for(const entry of fs.readdirSync(dir,{withFileTypes:true})){if(['.git','node_modules'].includes(entry.name))continue;const full=path.join(dir,entry.name);if(entry.isDirectory())walk(full);else if(entry.isFile()&&entry.name.endsWith('.html'))inject(full);}}
+function inject(file){const rel=path.relative(root,file).replaceAll('\\','/');if(skip.has(rel))return;let html=fs.readFileSync(file,'utf8');if(!html.includes('</head>')||!html.includes('</body>'))return;const depth=rel.split('/').length-1;const prefix=depth?'../'.repeat(depth):'';if(!html.includes('shell-ux.css'))html=html.replace('</head>',`<link rel="stylesheet" href="${prefix}assets/shell-ux.css"></head>`);if(!html.includes('shell-ux.js'))html=html.replace('</body>',`<script defer src="${prefix}assets/shell-ux.js"></script></body>`);fs.writeFileSync(file,html);}
+walk(root);
+console.log('Global contact/search/mobile support UX injected.');
