@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const file=path.resolve('assets/products.json');
+const reportFile=path.resolve('assets/affiliate-sync-report.json');
 const catalog=JSON.parse(fs.readFileSync(file,'utf8'));
 const tdToken=process.env.TRADEDOUBLER_PRODUCTS_TOKEN||'';
 const amazonTag=process.env.AMAZON_PARTNER_TAG||'hiperfoco-21';
@@ -11,6 +12,8 @@ const marketplace='www.amazon.es';
 let amazonAccessToken='';
 let tdFeeds=[];
 let tdMatches=0;
+const runAt=new Date().toISOString();
+const report={runAt,amazonApiEnabled:Boolean(amazonClientId&&amazonClientSecret),tradedoubler:{feeds:0,matches:0},products:[]};
 
 if(!tdToken) throw new Error('TRADEDOUBLER_PRODUCTS_TOKEN missing: affiliate price sync cannot run safely');
 
@@ -60,6 +63,13 @@ function scoreCandidate(item,product){
   return score;
 }
 
+function readTdPrice(td){
+  const p=td?.price;
+  if(!p)return '';
+  if(typeof p==='string'||typeof p==='number')return p;
+  return p.displayPrice||p.value||p.amount||'';
+}
+
 async function tdSearch(product){
   if(!tdFeeds.length)return null;
   const q=[product.name,product.model].filter(Boolean).join(' ');
@@ -81,16 +91,25 @@ async function tdSearch(product){
 
 tdFeeds=await getTdFeeds();
 if(!tdFeeds.length) throw new Error('Tradedoubler responded but no active product feeds with products were found');
+report.tradedoubler.feeds=tdFeeds.length;
 console.log(`Tradedoubler feeds discovered: ${tdFeeds.length}`);
 
-for(const product of Object.values(catalog.products)){
+for(const [key,product] of Object.entries(catalog.products)){
+  const itemReport={key,name:product.name,model:product.model||'',amazon:product.affiliate?.amazon?'affiliate-link-only':'missing',tradedoubler:'no-match',price:'',availability:'',merchant:'',verifiedAt:''};
+  let amazonMatched=false;
+
   try{
     const amazon=await amazonItem(product.asin);
     if(amazon){
+      amazonMatched=true;
       product.image=amazon.images?.primary?.large?.url||product.image;
       product.affiliate.amazon=amazon.detailPageURL||product.affiliate.amazon;
-      product.price=amazon.offersV2?.listings?.[0]?.price?.displayAmount||product.price;
+      product.price=amazon.offersV2?.listings?.[0]?.price?.displayAmount||'';
       product.source='amazon-creators-api';
+      product.verifiedAt=runAt;
+      itemReport.amazon='api-verified';
+      itemReport.price=product.price||'';
+      itemReport.verifiedAt=runAt;
     }
   }catch(err){console.warn(`Amazon sync skipped for ${product.name}: ${err.message}`)}
 
@@ -98,23 +117,41 @@ for(const product of Object.values(catalog.products)){
     const td=await tdSearch(product);
     if(td){
       tdMatches++;
-      product.image=product.image||td.productImage?.url||'';
+      const tdPrice=readTdPrice(td);
+      product.image=td.productImage?.url||product.image||'';
       product.affiliate.tradedoubler=td.productUrl||product.affiliate.tradedoubler||'';
-      const tdPrice=td.price?.displayPrice||td.price?.value||(typeof td.price==='string'||typeof td.price==='number'?td.price:'');
-      product.price=product.price||tdPrice||'';
+      if(!amazonMatched)product.price=tdPrice||'';
       product.merchant=td.programName||td._feed?.programs?.[0]?.name||td._feed?.name||'';
       product.feedId=td.feedId||td._feed?.feedId||null;
       product.availability=td.availability||'';
-      if(!product.source)product.source='tradedoubler';
+      product.source=amazonMatched?'amazon-creators-api+tradedoubler':'tradedoubler';
+      product.verifiedAt=runAt;
+      itemReport.tradedoubler='verified';
+      itemReport.price=amazonMatched?(product.price||''):(tdPrice||'');
+      itemReport.availability=product.availability;
+      itemReport.merchant=product.merchant;
+      itemReport.verifiedAt=runAt;
+    }else{
+      if(product.source==='tradedoubler'||product.source==='amazon-creators-api+tradedoubler'){
+        if(!amazonMatched)product.price='';
+        product.availability='';
+        product.verifiedAt='';
+      }
     }
-  }catch(err){console.warn(`Tradedoubler sync skipped for ${product.name}: ${err.message}`)}
+  }catch(err){
+    itemReport.tradedoubler=`error:${err.message}`;
+    console.warn(`Tradedoubler sync skipped for ${product.name}: ${err.message}`);
+  }
 
   if(product.affiliate.amazon&&!product.affiliate.amazon.includes('tag=')){
     product.affiliate.amazon += `${product.affiliate.amazon.includes('?')?'&':'?'}tag=${amazonTag}`;
   }
+  report.products.push(itemReport);
 }
 
-catalog.updatedAt=new Date().toISOString();
+catalog.updatedAt=runAt;
 catalog.integrations={amazon:Boolean(amazonClientId&&amazonClientSecret),tradedoubler:true,tradedoublerFeeds:tdFeeds.length,tradedoublerMatches:tdMatches};
+report.tradedoubler.matches=tdMatches;
 fs.writeFileSync(file,JSON.stringify(catalog,null,2)+'\n');
+fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');
 console.log(`Affiliate sync complete. Amazon=${Boolean(amazonClientId&&amazonClientSecret)} Tradedoubler=true feeds=${tdFeeds.length} matches=${tdMatches}`);
