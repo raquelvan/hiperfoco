@@ -13,9 +13,7 @@ let amazonAccessToken='';
 let tdFeeds=[];
 let tdMatches=0;
 const runAt=new Date().toISOString();
-const report={runAt,amazonApiEnabled:Boolean(amazonClientId&&amazonClientSecret),tradedoubler:{feeds:0,matches:0},products:[]};
-
-if(!tdToken) throw new Error('TRADEDOUBLER_PRODUCTS_TOKEN missing: affiliate price sync cannot run safely');
+const report={runAt,amazonApiEnabled:Boolean(amazonClientId&&amazonClientSecret),tradedoubler:{enabled:Boolean(tdToken),feeds:0,matches:0,status:'pending'},products:[]};
 
 async function getAmazonToken(){
   if(!amazonClientId||!amazonClientSecret)return '';
@@ -44,6 +42,7 @@ async function amazonItem(asin){
 }
 
 async function getTdFeeds(){
+  if(!tdToken)return [];
   const res=await fetch(`https://api.tradedoubler.com/1.0/productFeeds.json?token=${encodeURIComponent(tdToken)}`,{headers:{accept:'application/json'}});
   if(!res.ok)throw new Error(`Tradedoubler feeds ${res.status}`);
   const data=await res.json();
@@ -89,13 +88,27 @@ async function tdSearch(product){
   return best&&scoreCandidate(best,product)>0?best:null;
 }
 
-tdFeeds=await getTdFeeds();
-if(!tdFeeds.length) throw new Error('Tradedoubler responded but no active product feeds with products were found');
-report.tradedoubler.feeds=tdFeeds.length;
-console.log(`Tradedoubler feeds discovered: ${tdFeeds.length}`);
+try{
+  tdFeeds=await getTdFeeds();
+  if(!tdToken){
+    report.tradedoubler.status='skipped:no-token';
+    console.warn('Affiliate sync skipped: TRADEDOUBLER_PRODUCTS_TOKEN is not available in this build. Existing catalog kept.');
+  }else if(!tdFeeds.length){
+    report.tradedoubler.status='skipped:no-active-feeds';
+    console.warn('Affiliate sync skipped: no active Tradedoubler product feeds were returned. Existing catalog kept.');
+  }else{
+    report.tradedoubler.status='running';
+    report.tradedoubler.feeds=tdFeeds.length;
+    console.log(`Tradedoubler feeds discovered: ${tdFeeds.length}`);
+  }
+}catch(err){
+  report.tradedoubler.status=`skipped:${err.message}`;
+  console.warn(`Affiliate sync skipped because Tradedoubler is unavailable: ${err.message}. Existing catalog kept.`);
+  tdFeeds=[];
+}
 
 for(const [key,product] of Object.entries(catalog.products)){
-  const itemReport={key,name:product.name,model:product.model||'',amazon:product.affiliate?.amazon?'affiliate-link-only':'missing',tradedoubler:'no-match',price:'',availability:'',merchant:'',verifiedAt:''};
+  const itemReport={key,name:product.name,model:product.model||'',amazon:product.affiliate?.amazon?'affiliate-link-only':'missing',tradedoubler:tdFeeds.length?'no-match':'skipped',price:'',availability:'',merchant:'',verifiedAt:''};
   let amazonMatched=false;
 
   try{
@@ -113,34 +126,30 @@ for(const [key,product] of Object.entries(catalog.products)){
     }
   }catch(err){console.warn(`Amazon sync skipped for ${product.name}: ${err.message}`)}
 
-  try{
-    const td=await tdSearch(product);
-    if(td){
-      tdMatches++;
-      const tdPrice=readTdPrice(td);
-      product.image=td.productImage?.url||product.image||'';
-      product.affiliate.tradedoubler=td.productUrl||product.affiliate.tradedoubler||'';
-      if(!amazonMatched)product.price=tdPrice||'';
-      product.merchant=td.programName||td._feed?.programs?.[0]?.name||td._feed?.name||'';
-      product.feedId=td.feedId||td._feed?.feedId||null;
-      product.availability=td.availability||'';
-      product.source=amazonMatched?'amazon-creators-api+tradedoubler':'tradedoubler';
-      product.verifiedAt=runAt;
-      itemReport.tradedoubler='verified';
-      itemReport.price=amazonMatched?(product.price||''):(tdPrice||'');
-      itemReport.availability=product.availability;
-      itemReport.merchant=product.merchant;
-      itemReport.verifiedAt=runAt;
-    }else{
-      if(product.source==='tradedoubler'||product.source==='amazon-creators-api+tradedoubler'){
-        if(!amazonMatched)product.price='';
-        product.availability='';
-        product.verifiedAt='';
+  if(tdFeeds.length){
+    try{
+      const td=await tdSearch(product);
+      if(td){
+        tdMatches++;
+        const tdPrice=readTdPrice(td);
+        product.image=td.productImage?.url||product.image||'';
+        product.affiliate.tradedoubler=td.productUrl||product.affiliate.tradedoubler||'';
+        if(!amazonMatched)product.price=tdPrice||'';
+        product.merchant=td.programName||td._feed?.programs?.[0]?.name||td._feed?.name||'';
+        product.feedId=td.feedId||td._feed?.feedId||null;
+        product.availability=td.availability||'';
+        product.source=amazonMatched?'amazon-creators-api+tradedoubler':'tradedoubler';
+        product.verifiedAt=runAt;
+        itemReport.tradedoubler='verified';
+        itemReport.price=amazonMatched?(product.price||''):(tdPrice||'');
+        itemReport.availability=product.availability;
+        itemReport.merchant=product.merchant;
+        itemReport.verifiedAt=runAt;
       }
+    }catch(err){
+      itemReport.tradedoubler=`error:${err.message}`;
+      console.warn(`Tradedoubler sync skipped for ${product.name}: ${err.message}`);
     }
-  }catch(err){
-    itemReport.tradedoubler=`error:${err.message}`;
-    console.warn(`Tradedoubler sync skipped for ${product.name}: ${err.message}`);
   }
 
   if(product.affiliate.amazon&&!product.affiliate.amazon.includes('tag=')){
@@ -150,8 +159,9 @@ for(const [key,product] of Object.entries(catalog.products)){
 }
 
 catalog.updatedAt=runAt;
-catalog.integrations={amazon:Boolean(amazonClientId&&amazonClientSecret),tradedoubler:true,tradedoublerFeeds:tdFeeds.length,tradedoublerMatches:tdMatches};
+catalog.integrations={amazon:Boolean(amazonClientId&&amazonClientSecret),tradedoubler:Boolean(tdToken),tradedoublerFeeds:tdFeeds.length,tradedoublerMatches:tdMatches};
 report.tradedoubler.matches=tdMatches;
+if(tdFeeds.length)report.tradedoubler.status='complete';
 fs.writeFileSync(file,JSON.stringify(catalog,null,2)+'\n');
 fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');
-console.log(`Affiliate sync complete. Amazon=${Boolean(amazonClientId&&amazonClientSecret)} Tradedoubler=true feeds=${tdFeeds.length} matches=${tdMatches}`);
+console.log(`Affiliate sync finished without blocking deploy. Amazon=${Boolean(amazonClientId&&amazonClientSecret)} Tradedoubler=${Boolean(tdToken)} feeds=${tdFeeds.length} matches=${tdMatches}`);
