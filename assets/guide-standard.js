@@ -1,0 +1,30 @@
+(()=>{
+ const path=location.pathname;if(!path.startsWith('/guias/')||path.endsWith('/guias/')||path.endsWith('/guias/index.html'))return;
+ const main=document.querySelector('main.article');if(!main)return;main.classList.add('hf-guide');
+ const eyebrow=main.querySelector(':scope > .eyebrow'),title=main.querySelector(':scope > h1'),lead=main.querySelector(':scope > .home-lead');
+ if(title&&!main.querySelector('.hf-guide-hero')){
+  const hero=document.createElement('section');hero.className='hf-guide-hero';const left=document.createElement('div');left.className='hf-guide-hero-main';const answer=document.createElement('aside');answer.className='hf-guide-answer';
+  if(eyebrow)left.appendChild(eyebrow);left.appendChild(title);if(lead)left.appendChild(lead);
+  const quick=(lead?.textContent||'Te ayudamos a separar lo importante de las especificaciones que apenas cambian la compra.').split(/(?<=[.!?])\s/)[0];answer.innerHTML='<span>Respuesta rápida</span><strong>'+quick+'</strong><p>Después bajamos a producto, uso real, mantenimiento y alternativas.</p>';hero.append(left,answer);main.prepend(hero);
+ }
+ function slug(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,50)}
+ const direct=[...main.children];const hs=direct.filter(n=>n.tagName==='H2');if(hs.length&&!main.querySelector('.hf-guide-nav')){const nav=document.createElement('nav');nav.className='hf-guide-nav';hs.slice(0,8).forEach(h=>{h.id=h.id||slug(h.textContent);const a=document.createElement('a');a.href='#'+h.id;a.textContent=h.textContent.replace(/^\d+[.)]?\s*/,'');nav.appendChild(a)});main.querySelector('.hf-guide-hero')?.after(nav)}
+ const snapshot=[...main.children].filter(n=>!n.classList?.contains('hf-guide-hero')&&!n.classList?.contains('hf-guide-nav')&&!n.classList?.contains('hf-guide-picks')&&!n.classList?.contains('hf-guide-related'));
+ let section=null;for(const n of snapshot){if(n.tagName==='H2'){section=document.createElement('section');section.className='hf-guide-section';main.insertBefore(section,n);section.appendChild(n)}else if(section&&n.parentElement===main){section.appendChild(n)}}
+ const pickMap={
+  'como-elegir-cafetera-superautomatica.html':['delonghi-magnifica-evo','philips-5500','delonghi-magnifica-s'],
+  'mejores-cafeteras-superautomaticas-2026.html':['delonghi-magnifica-evo','philips-5500','delonghi-magnifica-s'],
+  'mejores-cafeteras-superautomaticas-calidad-precio.html':['delonghi-magnifica-evo','delonghi-magnifica-s','philips-5500'],
+  'mejores-cafeteras-superautomaticas-menos-500-euros.html':['delonghi-magnifica-evo','delonghi-magnifica-s'],
+  'delonghi-o-philips-superautomaticas.html':['delonghi-magnifica-evo','philips-5500','delonghi-magnifica-s'],
+  'mejores-cafeteras-para-cafe-con-leche.html':['philips-5500','delonghi-magnifica-evo'],
+  'superautomatica-o-manual.html':['delonghi-magnifica-evo','delonghi-magnifica-s'],
+  'cafe-aguado-superautomatica.html':['delonghi-magnifica-evo','philips-5500'],
+  'limpiar-cafetera-superautomatica.html':['philips-5500','delonghi-magnifica-evo'],
+  'philips-3300-lattego-mantenimiento-coste-real.html':['philips-5500','delonghi-magnifica-evo'],
+  'mejores-auriculares-inalambricos-2026.html':['sony-wh-ch720n','razer-blackshark-v2-x']
+ };
+ async function picks(){const ids=pickMap[path.split('/').pop()];if(!ids?.length||main.querySelector('.hf-guide-picks'))return;let cat={},ov={};try{const [a,b]=await Promise.all([fetch('/assets/products.json',{cache:'no-store'}),fetch('/assets/affiliate-overrides.json',{cache:'no-store'})]);if(a.ok)cat=(await a.json()).products||{};if(b.ok)ov=await b.json()}catch{}const items=ids.map(id=>{const p=cat[id]||{},o=ov[id]||{};return{id,name:o.name||p.name,image:o.image||p.image,amazon:o.amazon||p.affiliate?.amazon,td:p.affiliate?.tradedoubler,merchant:p.merchant}}).filter(p=>p.name&&(p.amazon||p.td));if(!items.length)return;const block=document.createElement('section');block.className='hf-guide-picks';block.innerHTML='<div class="hf-guide-picks-head"><div><h2>Nuestras recomendaciones</h2><p>Productos con enlace de compra verificado en nuestro catálogo de afiliación.</p></div></div><div class="hf-guide-pick-grid">'+items.map((p,i)=>'<article class="hf-guide-pick"><div class="hf-guide-pick-media">'+(p.image?'<img src="'+p.image+'" alt="'+p.name+'" loading="lazy">':'')+'</div><div class="hf-guide-pick-copy"><small>'+(i===0?'Nuestra elección':'Alternativa')+'</small><h3>'+p.name+'</h3><p>Comprueba siempre el modelo, vendedor, entrega y precio final antes de comprar.</p><div class="hf-guide-buy">'+(p.amazon?'<a href="'+p.amazon+'" target="_blank" rel="nofollow sponsored noopener">Amazon →</a>':'')+(p.td?'<a href="'+p.td+'" target="_blank" rel="nofollow sponsored noopener">'+(p.merchant||'Ver oferta')+' →</a>':'')+'</div></div></article>').join('')+'</div>';const nav=main.querySelector('.hf-guide-nav');nav?nav.after(block):main.querySelector('.hf-guide-hero')?.after(block)}
+ picks();
+ if(!main.querySelector('.hf-guide-related')){const rel=document.createElement('section');rel.className='hf-guide-related';rel.innerHTML='<h2>Sigue comparando</h2><div class="hf-guide-related-grid"><a href="/reviews/">Ver reseñas →</a><a href="/comparativas/">Ver comparativas →</a><a href="/guias/">Todas las guías →</a></div>';main.appendChild(rel)}
+})();
