@@ -1,27 +1,13 @@
 (()=>{
-  const p=location.pathname;
-  let fallback='/assets/images/gift-todo.webp';
-  if(/gamers|frikis|tecnologicos|musica/.test(p))fallback='/assets/images/gift-gamers.webp';
-  else if(/cafe/.test(p))fallback='/assets/images/gift-cafe.webp';
-  else if(/cocinillas/.test(p))fallback='/assets/images/gift-cocina.webp';
-  else if(/viajer/.test(p))fallback='/assets/images/gift-viajeros.webp';
-  else if(/casa/.test(p))fallback='/assets/images/gift-casa.webp';
-
   const style=document.createElement('style');
-  style.textContent='.gift4-media img[data-hf-fallback="1"]{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;padding:0!important;background:#f3f6f4!important}.gift4-media:has(img[data-hf-fallback="1"]) span{display:none!important}';
+  style.textContent='.gift4-media{background:#f5f7f6!important}.gift4-media img{object-fit:contain!important;object-position:center!important;padding:8px!important}.gift4-media.no-photo{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:14px!important}.gift4-media.no-photo span{display:block!important;font:700 .68rem/1.35 Inter,system-ui!important;color:#68756f!important}.gift4-media.no-photo span:before{content:"Imagen de producto pendiente";display:block}.gift4-media.no-photo img{display:none!important}';
   document.head.appendChild(style);
-
   function arm(img){
     if(!img||img.dataset.hfArmed==='1')return;
     img.dataset.hfArmed='1';
-    img.addEventListener('error',()=>{
-      if(img.dataset.hfFallback==='1')return;
-      img.dataset.hfFallback='1';
-      img.removeAttribute('srcset');
-      img.src=fallback;
-      img.closest('.gift4-media')?.classList.remove('no-photo');
-    });
-    if(img.complete&&img.naturalWidth===0)img.dispatchEvent(new Event('error'));
+    const fail=()=>{const media=img.closest('.gift4-media');if(!media)return;media.classList.add('no-photo');const label=media.querySelector('span');if(label)label.textContent='';};
+    img.addEventListener('error',fail,{once:true});
+    if(img.complete&&img.naturalWidth===0)fail();
   }
   function run(){document.querySelectorAll('.gift4-media img').forEach(arm)}
   document.addEventListener('DOMContentLoaded',run);
