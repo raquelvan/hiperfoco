@@ -7,6 +7,9 @@ for(const [id,o] of Object.entries(overrides)){
  const p=data.products[id]||{name:o.name||id,category:o.category||'default',image:'',affiliate:{amazon:'',tradedoubler:''}};
  p.name=o.name||p.name;
  p.category=o.category||p.category;
+ if(o.model)p.model=o.model;
+ if(o.asin)p.asin=o.asin;
+ if(o.review)p.review=o.review;
  if(o.image)p.image=o.image;
  if(typeof o.imageLocked==='boolean')p.imageLocked=o.imageLocked;
  if(o.imageSource)p.imageSource=o.imageSource;
