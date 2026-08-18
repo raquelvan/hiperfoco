@@ -1,10 +1,10 @@
 /* Correcciones de estabilidad del hub de reviews */
 .hub-grid{width:100%;max-width:100%;min-width:0;overflow:visible}
 .hub-card{width:100%;max-width:100%;min-width:0;overflow:hidden}
-.hub-card[aria-hidden="true"]{display:none!important}
-.hub-media{height:168px;background:#f2f6f4;display:grid;place-items:center;padding:15px;border-bottom:1px solid var(--line);overflow:hidden;text-decoration:none}
-.hub-media img{width:100%;height:100%;max-width:100%;object-fit:contain!important;object-position:center!important}
+.hub-card[hidden],.hub-card[aria-hidden="true"]{display:none!important}
+.hub-media{height:168px;min-height:168px;max-height:168px;background:#f2f6f4;display:flex;align-items:center;justify-content:center;padding:15px;border-bottom:1px solid var(--line);overflow:hidden;text-decoration:none}
+.hub-media img{display:block!important;width:auto!important;height:auto!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center!important;margin:auto!important}
 .hub-actions a{display:inline-flex;align-items:center;justify-content:center}
 @media(max-width:1080px){.hub-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:760px){.hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:520px){.hub-grid{grid-template-columns:1fr}.hub-tools{align-items:stretch}.hub-filter{flex:1 1 auto}.hub-search{min-width:100%}}
+@media(max-width:760px){.hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hub-media{height:150px;min-height:150px;max-height:150px}}
+@media(max-width:520px){.hub-grid{grid-template-columns:1fr}.hub-tools{align-items:stretch}.hub-filter{flex:1 1 auto}.hub-search{min-width:100%}.hub-media{height:180px;min-height:180px;max-height:180px}}
