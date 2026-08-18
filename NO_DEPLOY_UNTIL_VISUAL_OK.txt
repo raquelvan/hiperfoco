@@ -1,1 +1,0 @@
-Esta rama no debe pasar a producción hasta que la Deploy Preview confirme visualmente las fotos HD aprobadas y el responsive.
