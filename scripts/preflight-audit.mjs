@@ -46,7 +46,10 @@ function auditHtml(file){
   const desc=html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i)?.[1]||html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["']/i)?.[1]||'';
   const canonical=html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)?.[1]||html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i)?.[1]||'';
   const h1s=[...html.matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/gi)].map(m=>strip(m[1]));
-  pages.push({rel,noindex,canonical,title,h1:h1s[0]||''});
+  const reviewRenderer=/<script[^>]+id=["']review-data["'][^>]*>/i.test(html)&&/product-review\.js/i.test(html);
+  pages.push({rel,noindex,canonical,title,h1:h1s[0]||'',reviewRenderer});
+
+  if(/\.\.https?:\/\//i.test(html))errors.push(`${rel}: contiene URL externa corrupta tipo ..https://`);
 
   if(!noindex&&!legacy){
     if(!title)errors.push(`${rel}: falta <title>`);
@@ -55,7 +58,10 @@ function auditHtml(file){
     else if(strip(desc).length<45||strip(desc).length>180)warnings.push(`${rel}: description fuera de rango (${strip(desc).length})`);
     if(!canonical)errors.push(`${rel}: falta canonical`);
     else if(!canonical.startsWith(BASE))errors.push(`${rel}: canonical fuera de dominio (${canonical})`);
-    if(h1s.length!==1)errors.push(`${rel}: debe tener 1 H1 y tiene ${h1s.length}`);
+    if(h1s.length!==1){
+      if(h1s.length===0&&reviewRenderer)warnings.push(`${rel}: H1 generado por product-review.js`);
+      else errors.push(`${rel}: debe tener 1 H1 y tiene ${h1s.length}`);
+    }
     if(placeholderRx.test(strip(html)))errors.push(`${rel}: contiene texto placeholder/preparación`);
     if(canonical){
       const prev=canonicals.get(canonical);
