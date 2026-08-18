@@ -3,19 +3,6 @@ import path from 'node:path';
 
 const ROOT=process.cwd();
 const replacements=new Map([
-  ['/assets/images/product-magnifica-evo.webp','https://dam.delonghi.com/902x902/assets/225625'],
-  ['assets/images/product-magnifica-evo.webp','https://dam.delonghi.com/902x902/assets/225625'],
-  ['../assets/images/product-magnifica-evo.webp','https://dam.delonghi.com/902x902/assets/225625'],
-  ['/assets/images/product-magnifica-s.webp','https://dam.delonghi.com/902x902/assets/223655'],
-  ['assets/images/product-magnifica-s.webp','https://dam.delonghi.com/902x902/assets/223655'],
-  ['../assets/images/product-magnifica-s.webp','https://dam.delonghi.com/902x902/assets/223655'],
-  ['/assets/images/product-rivelia.webp','https://dam.delonghi.com/902x902/assets/269456'],
-  ['assets/images/product-rivelia.webp','https://dam.delonghi.com/902x902/assets/269456'],
-  ['../assets/images/product-rivelia.webp','https://dam.delonghi.com/902x902/assets/269456'],
-  ['/assets/images/product-philips-3300.webp','https://ferbod.com/cdn/shop/files/cdc120be-Philips-Series-3300-Fully-automatic-espresso-machine-EP334790-2.webp?v=1771354052&width=1445'],
-  ['assets/images/product-philips-3300.webp','https://ferbod.com/cdn/shop/files/cdc120be-Philips-Series-3300-Fully-automatic-espresso-machine-EP334790-2.webp?v=1771354052&width=1445'],
-  ['../assets/images/product-philips-3300.webp','https://ferbod.com/cdn/shop/files/cdc120be-Philips-Series-3300-Fully-automatic-espresso-machine-EP334790-2.webp?v=1771354052&width=1445'],
-  ['https://us.home-appliances.philips/cdn/shop/files/3300_2_3000x3000_006594e4-c53f-426d-b9d6-04c3bf61a317_1946x.jpg?v=1765219594','https://ferbod.com/cdn/shop/files/cdc120be-Philips-Series-3300-Fully-automatic-espresso-machine-EP334790-2.webp?v=1771354052&width=1445'],
   ['/assets/images/guide-airfryer.webp','/assets/img/freidora-premium.png'],
   ['assets/images/guide-airfryer.webp','assets/img/freidora-premium.png'],
   ['../assets/images/guide-airfryer.webp','../assets/img/freidora-premium.png'],
@@ -30,8 +17,6 @@ const replacements=new Map([
   ['../assets/images/guide-robot.webp','https://images.pexels.com/photos/6856825/pexels-photo-6856825.jpeg?auto=compress&cs=tinysrgb&w=1400']
 ]);
 
-// Sustituye primero las rutas más específicas/largas. Así '../assets/…'
-// no puede convertirse accidentalmente en '..https://…' al casar '/assets/…'.
 const ordered=[...replacements.entries()].sort((a,b)=>b[0].length-a[0].length);
 let files=0;
 function walk(dir){
