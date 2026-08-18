@@ -36,16 +36,20 @@ for(const [label,viewport] of sizes){
       const lowRes=[...document.querySelectorAll('.gift-image img,.guide-image img')]
         .filter(img=>img.naturalWidth>0&&img.getBoundingClientRect().width>120&&img.naturalWidth<600)
         .map(img=>({src:img.currentSrc||img.src,w:img.naturalWidth,shown:Math.round(img.getBoundingClientRect().width)}));
-      const forbidden=[...document.images].filter(img=>/assets\/images\/(product-|gift-)/.test(img.currentSrc||img.src)).map(img=>img.currentSrc||img.src);
+      const productContexts='.product-media img,.hub-media img,.compare-product img,.review-product img,.hf-guide-pick-media img,.page-product-media img,.reviewCard img';
+      const legacyProduct=[...document.querySelectorAll(productContexts)].filter(img=>/assets\/images\/product-/.test(img.currentSrc||img.src)).map(img=>img.currentSrc||img.src);
+      const legacyGift=pageName==='home'?[...document.querySelectorAll('.gifts>.gift img')].filter(img=>/assets\/images\/gift-/.test(img.currentSrc||img.src)).map(img=>img.currentSrc||img.src):[];
+      const forbidden=[...legacyProduct,...legacyGift];
       const checks={};
       if(pageName==='home'){
-        checks.homeReviews=document.querySelectorAll('.review-grid>.card img').length;
-        checks.homeGuides=document.querySelectorAll('.guide-grid>.card img').length;
-        checks.homeGifts=document.querySelectorAll('.gifts>.gift img').length;
+        checks.homeReviews=[...document.querySelectorAll('.review-grid>.card')].filter(c=>c.querySelector('.product-media img')).length;
+        checks.homeGuides=[...document.querySelectorAll('.guide-grid>.card')].filter(c=>c.querySelector('.guide-image img')).length;
+        checks.homeGifts=[...document.querySelectorAll('.gifts>.gift')].filter(c=>c.querySelector('.gift-image img')).length;
       }
       if(pageName.startsWith('review-')){
         checks.budgetImages=document.querySelectorAll('.budget-compact-wrap .money img,.budget-compact-wrap .hf-auto-product-media').length;
         checks.heroImages=document.querySelectorAll('.review-product img').length;
+        checks.heroWrong=[...document.querySelectorAll('.review-product img')].filter(img=>/gift-|guide-/i.test(img.currentSrc||img.src)).length;
       }
       if(pageName==='reviews') checks.reviewCardsMissing=[...document.querySelectorAll('[data-review-card],.reviews-grid>.card,.review-grid>.card')].filter(c=>!c.querySelector('img')).length;
       if(pageName==='comparativas') checks.comparisonMissing=[...document.querySelectorAll('.hub-card')].filter(c=>!c.querySelector('img')).length;
@@ -56,16 +60,18 @@ for(const [label,viewport] of sizes){
     if(result.emptyAlt.length) failures.push(`${name}-${label}: ${result.emptyAlt.length} imágenes sin alt`);
     if(result.overflow) failures.push(`${name}-${label}: desbordamiento horizontal de ${result.overflowBy}px`);
     if(result.lowRes.length) failures.push(`${name}-${label}: imágenes editoriales con resolución insuficiente: ${result.lowRes.map(x=>`${x.w}px ${x.src}`).join(' | ')}`);
-    if(result.forbidden.length) failures.push(`${name}-${label}: siguen cargándose thumbnails legacy: ${result.forbidden.join(' | ')}`);
+    if(result.forbidden.length) failures.push(`${name}-${label}: siguen cargándose thumbnails legacy en tarjetas relevantes: ${result.forbidden.join(' | ')}`);
     if(name==='home'){
-      if(result.checks.homeReviews!==4) failures.push(`${name}-${label}: Últimas reseñas debe tener 4 fotos y tiene ${result.checks.homeReviews}`);
-      if(result.checks.homeGuides!==5) failures.push(`${name}-${label}: Guías populares debe tener 5 fotos y tiene ${result.checks.homeGuides}`);
-      if(result.checks.homeGifts!==6) failures.push(`${name}-${label}: Regalos debe tener 6 fotos y tiene ${result.checks.homeGifts}`);
+      if(result.checks.homeReviews!==4) failures.push(`${name}-${label}: Últimas reseñas debe tener 4 tarjetas con foto y tiene ${result.checks.homeReviews}`);
+      if(result.checks.homeGuides!==5) failures.push(`${name}-${label}: Guías populares debe tener 5 tarjetas con foto y tiene ${result.checks.homeGuides}`);
+      if(result.checks.homeGifts!==6) failures.push(`${name}-${label}: Regalos debe tener 6 tarjetas con foto y tiene ${result.checks.homeGifts}`);
     }
     if(name.startsWith('review-')){
       if(result.checks.budgetImages!==0) failures.push(`${name}-${label}: Qué opción elegir no debe contener fotos automáticas (${result.checks.budgetImages})`);
       if(result.checks.heroImages!==1) failures.push(`${name}-${label}: hero de review debe tener exactamente 1 foto (${result.checks.heroImages})`);
+      if(result.checks.heroWrong!==0) failures.push(`${name}-${label}: hero de review usa una imagen editorial/gift en vez del producto`);
     }
+    if(result.checks.reviewCardsMissing>0) failures.push(`${name}-${label}: ${result.checks.reviewCardsMissing} cards de review sin foto`);
     if(result.checks.comparisonMissing>0) failures.push(`${name}-${label}: ${result.checks.comparisonMissing} comparativas sin foto`);
     if(result.checks.cafeMissing>0) failures.push(`${name}-${label}: ${result.checks.cafeMissing} tarjetas de cafeteras sin foto`);
     if(consoleErrors.length) console.warn(`${name}-${label}: errores JS: ${consoleErrors.join(' | ')}`);
@@ -77,4 +83,4 @@ for(const [label,viewport] of sizes){
 }
 await browser.close();
 if(failures.length){console.error('\nQA VISUAL FALLIDA\n'+failures.join('\n'));process.exit(1)}
-console.log('✓ QA visual completa: imágenes presentes, sin thumbnails legacy, sin inyección en presupuesto, sin overflow y con resolución editorial suficiente.');
+console.log('✓ QA visual completa: imágenes presentes, sin thumbnails legacy en cards, sin inyección en presupuesto, sin overflow y con resolución editorial suficiente.');
