@@ -4,7 +4,7 @@
   "philips-5500":{"name":"Philips Serie 5500 LatteGo","model":"EP5544/80","review":"/reviews/philips-5500-lattego.html","image":"/assets/approved/philips-5500-v4.png","imageLocked":true,"imageSource":"approved-philips-official-v4","amazon":"https://link.amazon/B08AwjTeU","category":"cafe"},
   "delonghi-rivelia":{"name":"De’Longhi Rivelia","model":"EXAM440.35.B","review":"/reviews/delonghi-rivelia.html","image":"/assets/approved/rivelia-v3.jpg","imageLocked":true,"imageSource":"approved-home-20260810-v3","amazon":"https://link.amazon/B0iPMUue6","category":"cafe"},
   "philips-3300":{"name":"Philips Serie 3300 LatteGo","model":"EP3347/90","review":"/reviews/philips-3300-lattego.html","image":"/assets/approved/philips-3300-v3.jpg","imageLocked":true,"imageSource":"approved-home-20260810-v3","category":"cafe"},
-  "ninja-af400":{"name":"Ninja Foodi MAX AF400","model":"AF400EU","review":"/reviews/ninja-af400.html","image":"https://kodutarvik.ee/wp-content/uploads/2023/11/Ninja-Foodi-MAX-Dual-Zone-AF400EUCP.png","imageLocked":false,"imageSource":"candidate-product","amazon":"https://link.amazon/B01gQts3g","category":"cocina"},
+  "ninja-af400":{"name":"Ninja Foodi MAX AF400","model":"AF400EU","review":"/reviews/ninja-af400.html","image":"/assets/approved/ninja-af400-v1.png","imageLocked":true,"imageSource":"approved-local-af400","amazon":"https://link.amazon/B01gQts3g","category":"cocina"},
   "philips-lumea-bri957":{"name":"Philips Lumea Serie 9000 BRI957/00","model":"BRI957/00","image":"","imageLocked":false,"category":"cuidado-personal"},
   "nespresso-vertuo-plus":{"name":"Nespresso VertuoPlus","review":"/reviews/nespresso-vertuo-plus.html","image":"","amazon":"https://link.amazon/B0fk29LwC","category":"cafe"}
 }
