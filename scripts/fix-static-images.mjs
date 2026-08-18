@@ -30,7 +30,10 @@ const replacements=new Map([
   ['../assets/images/guide-robot.webp','https://images.pexels.com/photos/6856825/pexels-photo-6856825.jpeg?auto=compress&cs=tinysrgb&w=1400']
 ]);
 
-let files=0,changes=0;
+// Sustituye primero las rutas más específicas/largas. Así '../assets/…'
+// no puede convertirse accidentalmente en '..https://…' al casar '/assets/…'.
+const ordered=[...replacements.entries()].sort((a,b)=>b[0].length-a[0].length);
+let files=0;
 function walk(dir){
   for(const e of fs.readdirSync(dir,{withFileTypes:true})){
     if(['.git','node_modules','.netlify'].includes(e.name))continue;
@@ -41,8 +44,9 @@ function walk(dir){
 }
 function fix(file){
   let html=fs.readFileSync(file,'utf8'),before=html;
-  for(const [from,to] of replacements)html=html.split(from).join(to);
-  if(html!==before){fs.writeFileSync(file,html);files++;changes++}
+  for(const [from,to] of ordered)html=html.split(from).join(to);
+  if(/\.\.https?:\/\//i.test(html))throw new Error(`URL externa corrupta en ${path.relative(ROOT,file)}`);
+  if(html!==before){fs.writeFileSync(file,html);files++}
 }
 walk(ROOT);
 console.log(`Imágenes estáticas saneadas en ${files} HTML.`);
