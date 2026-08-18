@@ -3,6 +3,42 @@
   command = "node scripts/merge-affiliate-overrides.mjs && node scripts/affiliate-sync.mjs && node scripts/inject-gift-fallback.mjs && node scripts/seo-build.mjs && node scripts/weekly-inject.mjs && node scripts/inject-affiliate-catalog.mjs && node scripts/inject-product-image-fixes.mjs && node scripts/inject-shell-ux.mjs && node scripts/build-sitemap.mjs"
   publish = "."
 
+# Consolidación de URLs legacy: una sola URL canónica por intención.
+[[redirects]]
+  from = "/categorias"
+  to = "/categoria/"
+  status = 301
+
+[[redirects]]
+  from = "/categorias/"
+  to = "/categoria/"
+  status = 301
+
+[[redirects]]
+  from = "/categorias/*"
+  to = "/categoria/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/necesidades"
+  to = "/selecciones/"
+  status = 301
+
+[[redirects]]
+  from = "/necesidades/"
+  to = "/selecciones/"
+  status = 301
+
+[[redirects]]
+  from = "/necesidades/*"
+  to = "/selecciones/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/legal/*"
+  to = "/:splat"
+  status = 301
+
 [[redirects]]
   from = "/selecciones/menos-de-300.html"
   to = "/selecciones/menos-300.html"
