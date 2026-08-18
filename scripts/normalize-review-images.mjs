@@ -24,7 +24,7 @@ for(const name of fs.readdirSync(dir)){
   if(!m)continue;
   let data;try{data=JSON.parse(m[2])}catch{continue}
   const approved=imageFor(data.name);
-  if(approved)data.image=approved;
+  if(approved){data.image=approved;data.detailImage=approved;}
   if(Array.isArray(data.comparison))data.comparison=data.comparison.map(row=>{
     if(!Array.isArray(row))return row;
     const src=imageFor(row[0]);
@@ -38,4 +38,4 @@ for(const name of fs.readdirSync(dir)){
   }
   fs.writeFileSync(file,html);changed++;
 }
-console.log(`✓ Reviews normalizadas: imágenes locales aprobadas + H1 estático de respaldo en ${changed} páginas.`);
+console.log(`✓ Reviews normalizadas: imágenes principal/detalle locales + H1 estático en ${changed} páginas.`);
