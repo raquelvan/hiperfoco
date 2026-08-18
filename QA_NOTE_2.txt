@@ -1,0 +1,1 @@
+Validar Home, /reviews/ y /categoria/cafe.html en desktop y móvil antes de producción.
