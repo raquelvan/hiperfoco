@@ -7,7 +7,10 @@ on:
 
 jobs:
   fetch:
+    if: ${{ !contains(github.event.head_commit.message, 'assets: store approved HD') }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Descargar imágenes limpias
@@ -39,7 +42,20 @@ jobs:
             "https://www.cf-dam.vbs.versuni.com/adaptivemedia/rendition?format=webp&height=2048&id=1b7fcdc9342844c53c459e83b581f786dec466bf&width=2048"
           file fetched-assets/*
           du -h fetched-assets/*
-      - name: Guardar assets
+      - name: Guardar assets en rama
+        run: |
+          mkdir -p assets/approved
+          cp fetched-assets/magnifica-evo.jpg assets/approved/magnifica-evo.jpg
+          cp fetched-assets/magnifica-s.jpg assets/approved/magnifica-s.jpg
+          cp fetched-assets/rivelia.jpg assets/approved/rivelia.jpg
+          cp fetched-assets/philips-3300.jpg assets/approved/philips-3300.jpg
+          cp fetched-assets/philips-5500.webp assets/approved/philips-5500.webp
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/approved
+          git commit -m "assets: store approved HD product photos"
+          git push
+      - name: Guardar artefacto
         uses: actions/upload-artifact@v4
         with:
           name: clean-product-assets
