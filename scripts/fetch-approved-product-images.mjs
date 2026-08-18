@@ -4,8 +4,8 @@ import path from 'node:path';
 const outDir = path.resolve('assets/approved');
 await fs.mkdir(outDir, { recursive: true });
 
-// Fuentes exactas de fabricante. Las cuatro cafeteras principales recuperan
-// las imágenes usadas en la home validada el 10/08/2026.
+// Fuentes exactas de producto. Las cafeteras principales recuperan las imágenes
+// usadas en la home validada el 10/08/2026; productos frágiles se alojan localmente.
 const products = {
   'magnifica-evo-v3.jpg': [
     {url:'https://dam.delonghi.com/902x902/assets/225625', min:8000}
@@ -25,6 +25,9 @@ const products = {
   ],
   'jbl-flip6-v1.png': [
     {url:'https://global.jbl.com/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw4e91d6eb/1_JBL_FLIP6_HERO_BLACK_29391_x2.png?sh=1000&sw=1000', min:20000}
+  ],
+  'ninja-af400-v1.png': [
+    {url:'https://kodutarvik.ee/wp-content/uploads/2023/11/Ninja-Foodi-MAX-Dual-Zone-AF400EUCP.png', min:20000}
   ]
 };
 
@@ -50,4 +53,4 @@ async function fetchOne(file, candidates) {
 }
 
 for (const [file, candidates] of Object.entries(products)) await fetchOne(file, candidates);
-console.log('✓ Fotos de producto críticas descargadas desde fabricante y servidas localmente.');
+console.log('✓ Fotos de producto críticas descargadas y servidas localmente.');
