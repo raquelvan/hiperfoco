@@ -4,8 +4,8 @@ import path from 'node:path';
 const outDir = path.resolve('assets/approved');
 await fs.mkdir(outDir, { recursive: true });
 
-// Fuentes exactas que usaba la home validada el 10/08/2026.
-// Solo se admiten fabricante/DAM para los productos bloqueados.
+// Fuentes exactas de fabricante. Las cuatro cafeteras principales recuperan
+// las imágenes usadas en la home validada el 10/08/2026.
 const products = {
   'magnifica-evo-v3.jpg': [
     {url:'https://dam.delonghi.com/902x902/assets/225625', min:8000}
@@ -19,9 +19,12 @@ const products = {
   'magnifica-s-v3.jpg': [
     {url:'https://dam.delonghi.com/902x902/assets/223655', min:8000}
   ],
-  'philips-5500-v3.webp': [
-    {url:'https://www.cf-dam.vbs.versuni.com/adaptivemedia/rendition?format=webp&height=1200&id=1b7fcdc9342844c53c459e83b581f786dec466bf&width=1200', min:50000},
-    {url:'https://images.philips.com/is/image/philipsconsumer/vrs_985a5521_0beb_4817_914c3fe3bfafc0f8?$png$=&fit=constrain&hei=1200&wid=1200', min:50000}
+  'philips-5500-v4.png': [
+    {url:'https://images.philips.com/is/image/philipsconsumer/vrs_985a5521_0beb_4817_914c3fe3bfafc0f8?%24png%24=&fit=constrain&hei=1000&wid=1000', min:30000},
+    {url:'https://images.philips.com/is/image/philipsconsumer/vrs_985a5521_0beb_4817_914c3fe3bfafc0f8?%24png%24=&fit=constrain&hei=410&wid=410', min:12000}
+  ],
+  'jbl-flip6-v1.png': [
+    {url:'https://global.jbl.com/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw4e91d6eb/1_JBL_FLIP6_HERO_BLACK_29391_x2.png?sh=1000&sw=1000', min:20000}
   ]
 };
 
@@ -47,4 +50,4 @@ async function fetchOne(file, candidates) {
 }
 
 for (const [file, candidates] of Object.entries(products)) await fetchOne(file, candidates);
-console.log('✓ Fotos aprobadas del 10/08 recuperadas desde fabricante y versionadas v3.');
+console.log('✓ Fotos de producto críticas descargadas desde fabricante y servidas localmente.');
