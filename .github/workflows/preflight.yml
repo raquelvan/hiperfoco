@@ -48,33 +48,14 @@ jobs:
             sleep 4
           done
           exit 1
-      - name: Instalar navegador QA
-        if: github.event_name == 'pull_request'
-        run: npx -y playwright@1.55.0 install chromium
-      - name: Capturas visuales de preview
+      - name: Instalar Playwright para QA
         if: github.event_name == 'pull_request'
         run: |
-          URL="https://deploy-preview-${{ github.event.number }}--hiperfoco.netlify.app"
-          shot () {
-            NAME="$1"; SIZE="$2"; PATHNAME="$3"
-            npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="$SIZE" --full-page "$URL$PATHNAME" "$NAME.png"
-          }
-          shot qa-home-desktop "1440,1000" "/"
-          shot qa-home-mobile "390,844" "/"
-          shot qa-regalos-desktop "1440,1000" "/regalos/"
-          shot qa-regalos-mobile "390,844" "/regalos/"
-          shot qa-reviews-desktop "1440,1000" "/reviews/"
-          shot qa-reviews-mobile "390,844" "/reviews/"
-          shot qa-cafe-desktop "1440,1000" "/categoria/cafe.html"
-          shot qa-cafe-mobile "390,844" "/categoria/cafe.html"
-          shot qa-categorias-desktop "1440,1000" "/categoria/"
-          shot qa-categorias-mobile "390,844" "/categoria/"
-          shot qa-comparativas-desktop "1440,1000" "/comparativas/"
-          shot qa-comparativas-mobile "390,844" "/comparativas/"
-          shot qa-guias-desktop "1440,1000" "/guias/"
-          shot qa-guias-mobile "390,844" "/guias/"
-          shot qa-selecciones-desktop "1440,1000" "/selecciones/"
-          shot qa-selecciones-mobile "390,844" "/selecciones/"
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install chromium
+      - name: QA visual responsive con scroll real
+        if: github.event_name == 'pull_request'
+        run: node scripts/visual-qa.mjs "https://deploy-preview-${{ github.event.number }}--hiperfoco.netlify.app"
       - name: Guardar capturas QA
         if: always() && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
