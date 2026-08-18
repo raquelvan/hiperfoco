@@ -9,7 +9,9 @@ const rules = [
   { terms:['de’longhi magnifica s',"de'longhi magnifica s",'delonghi magnifica s'], src:'/assets/approved/magnifica-s-v3.jpg' },
   { terms:['philips serie 5500 lattego','philips 5500 lattego'], src:'/assets/approved/philips-5500-v4.png' },
   { terms:['ninja foodi max af400','ninja af400'], src:'/assets/approved/ninja-af400-v1.png' },
-  { terms:['jbl flip 6'], src:'/assets/approved/jbl-flip6-v1.png' }
+  { terms:['jbl clip 5'], src:'/assets/approved/jbl-clip5-v1.jpg' },
+  { terms:['jbl flip 6'], src:'/assets/approved/jbl-flip6-v1.png' },
+  { terms:['sony wh-ch720n','sony wh ch720n'], src:'/assets/approved/sony-ch720n-v1.jpg' }
 ];
 const legacyMap={
   '/assets/images/product-magnifica-evo.webp':'/assets/approved/magnifica-evo-v3.jpg',
@@ -46,8 +48,18 @@ for(const file of await files(ROOT)){
 }
 
 const catalogPath=path.join(ROOT,'assets','affiliate-overrides.json');
-try{const data=JSON.parse(await fs.readFile(catalogPath,'utf8'));const map={'delonghi-magnifica-evo':'/assets/approved/magnifica-evo-v3.jpg','philips-3300':'/assets/approved/philips-3300-v3.jpg','delonghi-rivelia':'/assets/approved/rivelia-v3.jpg','delonghi-magnifica-s':'/assets/approved/magnifica-s-v3.jpg','philips-5500':'/assets/approved/philips-5500-v4.png','ninja-af400':'/assets/approved/ninja-af400-v1.png'};for(const [k,src] of Object.entries(map))if(data[k])Object.assign(data[k],{image:src,imageLocked:true,imageSource:'approved-local'});await fs.writeFile(catalogPath,JSON.stringify(data,null,2)+'\n');}catch(e){console.warn('No se pudo actualizar affiliate-overrides:',e.message);}
+try{
+  const data=JSON.parse(await fs.readFile(catalogPath,'utf8'));
+  const map={'delonghi-magnifica-evo':'/assets/approved/magnifica-evo-v3.jpg','philips-3300':'/assets/approved/philips-3300-v3.jpg','delonghi-rivelia':'/assets/approved/rivelia-v3.jpg','delonghi-magnifica-s':'/assets/approved/magnifica-s-v3.jpg','philips-5500':'/assets/approved/philips-5500-v4.png','ninja-af400':'/assets/approved/ninja-af400-v1.png'};
+  for(const [k,src] of Object.entries(map))if(data[k])Object.assign(data[k],{image:src,imageLocked:true,imageSource:'approved-local'});
+  await fs.writeFile(catalogPath,JSON.stringify(data,null,2)+'\n');
+}catch(e){console.warn('No se pudo actualizar affiliate-overrides:',e.message);}
 
 const productsPath=path.join(ROOT,'assets','products.json');
-try{const data=JSON.parse(await fs.readFile(productsPath,'utf8'));if(data.products?.['jbl-flip-6'])Object.assign(data.products['jbl-flip-6'],{image:'/assets/approved/jbl-flip6-v1.png',imageLocked:true,imageSource:'approved-jbl-official'});await fs.writeFile(productsPath,JSON.stringify(data,null,2)+'\n');}catch(e){console.warn('No se pudo fijar JBL Flip 6 en products:',e.message);}
+try{
+  const data=JSON.parse(await fs.readFile(productsPath,'utf8'));
+  const map={'jbl-clip-5':'/assets/approved/jbl-clip5-v1.jpg','jbl-flip-6':'/assets/approved/jbl-flip6-v1.png','sony-wh-ch720n':'/assets/approved/sony-ch720n-v1.jpg'};
+  for(const [k,src] of Object.entries(map))if(data.products?.[k])Object.assign(data.products[k],{image:src,imageLocked:true,imageSource:'approved-local'});
+  await fs.writeFile(productsPath,JSON.stringify(data,null,2)+'\n');
+}catch(e){console.warn('No se pudieron fijar productos de tecnología:',e.message);}
 console.log(`✓ Fotos aprobadas y productos frágiles fijados localmente en ${changed} HTML.`);
