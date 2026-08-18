@@ -7,7 +7,7 @@ const rules = [
   { terms:['philips serie 3300 lattego','philips 3300 lattego'], src:'/assets/approved/philips-3300-v3.jpg' },
   { terms:['de’longhi rivelia',"de'longhi rivelia",'delonghi rivelia'], src:'/assets/approved/rivelia-v3.jpg' },
   { terms:['de’longhi magnifica s',"de'longhi magnifica s",'delonghi magnifica s'], src:'/assets/approved/magnifica-s-v3.jpg' },
-  { terms:['philips serie 5500 lattego','philips 5500 lattego'], src:'/assets/approved/philips-5500-v3.webp' }
+  { terms:['philips serie 5500 lattego','philips 5500 lattego'], src:'/assets/approved/philips-5500-v4.png' }
 ];
 const legacyMap={
   '/assets/images/product-magnifica-evo.webp':'/assets/approved/magnifica-evo-v3.jpg',
@@ -26,7 +26,8 @@ const legacyMap={
   '/assets/approved/philips-3300-v2.jpg':'/assets/approved/philips-3300-v3.jpg',
   '/assets/approved/rivelia-v2.jpg':'/assets/approved/rivelia-v3.jpg',
   '/assets/approved/magnifica-s-v2.jpg':'/assets/approved/magnifica-s-v3.jpg',
-  '/assets/approved/philips-5500-v2.webp':'/assets/approved/philips-5500-v3.webp'
+  '/assets/approved/philips-5500-v2.webp':'/assets/approved/philips-5500-v4.png',
+  '/assets/approved/philips-5500-v3.webp':'/assets/approved/philips-5500-v4.png'
 };
 
 async function files(dir){const out=[];for(const e of await fs.readdir(dir,{withFileTypes:true})){if(['.git','node_modules'].includes(e.name))continue;const p=path.join(dir,e.name);if(e.isDirectory())out.push(...await files(p));else if(e.name.endsWith('.html'))out.push(p);}return out;}
@@ -43,5 +44,5 @@ for(const file of await files(ROOT)){
 }
 
 const catalogPath=path.join(ROOT,'assets','affiliate-overrides.json');
-try{const data=JSON.parse(await fs.readFile(catalogPath,'utf8'));const map={'delonghi-magnifica-evo':'/assets/approved/magnifica-evo-v3.jpg','philips-3300':'/assets/approved/philips-3300-v3.jpg','delonghi-rivelia':'/assets/approved/rivelia-v3.jpg','delonghi-magnifica-s':'/assets/approved/magnifica-s-v3.jpg','philips-5500':'/assets/approved/philips-5500-v3.webp'};for(const [k,src] of Object.entries(map))if(data[k])Object.assign(data[k],{image:src,imageLocked:true,imageSource:'approved-home-20260810-v3'});await fs.writeFile(catalogPath,JSON.stringify(data,null,2)+'\n');}catch(e){console.warn('No se pudo actualizar affiliate-overrides:',e.message);}
-console.log(`✓ Fotos aprobadas del 10/08 aplicadas como v3 en ${changed} HTML.`);
+try{const data=JSON.parse(await fs.readFile(catalogPath,'utf8'));const map={'delonghi-magnifica-evo':'/assets/approved/magnifica-evo-v3.jpg','philips-3300':'/assets/approved/philips-3300-v3.jpg','delonghi-rivelia':'/assets/approved/rivelia-v3.jpg','delonghi-magnifica-s':'/assets/approved/magnifica-s-v3.jpg','philips-5500':'/assets/approved/philips-5500-v4.png'};for(const [k,src] of Object.entries(map))if(data[k])Object.assign(data[k],{image:src,imageLocked:true,imageSource:'approved-home-20260810'});await fs.writeFile(catalogPath,JSON.stringify(data,null,2)+'\n');}catch(e){console.warn('No se pudo actualizar affiliate-overrides:',e.message);}
+console.log(`✓ Fotos aprobadas aplicadas en ${changed} HTML.`);
