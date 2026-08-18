@@ -50,15 +50,18 @@ jobs:
         run: npx -y playwright@1.55.0 install --with-deps chromium
       - name: Capturas visuales de preview
         if: github.event_name == 'pull_request'
+        continue-on-error: true
         run: |
           URL="https://deploy-preview-${{ github.event.number }}--hiperfoco.netlify.app"
           npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL" qa-home-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --device="iPhone 14" --full-page "$URL" qa-home-mobile.png
+          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page "$URL" qa-home-mobile.png
           npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL/regalos/" qa-regalos-desktop.png
           npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL/reviews/" qa-reviews-desktop.png
+          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL/categoria/cafe.html" qa-cafe-desktop.png
       - name: Guardar capturas QA
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: visual-qa
           path: qa-*.png
+          if-no-files-found: error
