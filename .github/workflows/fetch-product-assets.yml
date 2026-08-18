@@ -1,0 +1,46 @@
+name: Fetch clean product assets
+
+on:
+  push:
+    branches: [asset-fetch-20260818]
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Descargar imágenes limpias
+        run: |
+          mkdir -p fetched-assets
+          fetch_one(){
+            out="$1"; shift
+            for url in "$@"; do
+              echo "Trying $url"
+              if curl -fL --retry 2 --connect-timeout 20 --max-time 90 -A "Mozilla/5.0" "$url" -o "fetched-assets/$out"; then
+                test -s "fetched-assets/$out" && return 0
+              fi
+            done
+            echo "FAILED $out" >&2
+            return 1
+          }
+          fetch_one magnifica-evo.jpg \
+            "https://dam.delonghi.com/902x902/assets/225625" \
+            "https://thk-cdn.fra1.cdn.digitaloceanspaces.com/products/kavovarki-ta-kavomasini/kavomasina-avtomaticna-delonghi-magnifica-evo-ecam-29061sb-europe/delonghimagnificaevoecam29061sbeurope.jpg"
+          fetch_one magnifica-s.jpg \
+            "https://dam.delonghi.com/902x902/assets/223655"
+          fetch_one rivelia.jpg \
+            "https://dam.delonghi.com/902x902/assets/269456" \
+            "https://www.euronics.it/dw/image/v2/BFPN_PRD/on/demandware.static/-/Sites-catalog_euronics_master/default/dw6cf71bcf/hi-res/232007905_4.jpg?q=90&strip=false&sw=1000"
+          fetch_one philips-3300.jpg \
+            "https://us.home-appliances.philips/cdn/shop/files/3300_2_3000x3000_006594e4-c53f-426d-b9d6-04c3bf61a317_1946x.jpg?v=1765219594" \
+            "https://ferbod.com/cdn/shop/files/cdc120be-Philips-Series-3300-Fully-automatic-espresso-machine-EP334790-2.webp?v=1771354052&width=1445"
+          fetch_one philips-5500.webp \
+            "https://www.cf-dam.vbs.versuni.com/adaptivemedia/rendition?format=webp&height=2048&id=1b7fcdc9342844c53c459e83b581f786dec466bf&width=2048"
+          file fetched-assets/*
+          du -h fetched-assets/*
+      - name: Guardar assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: clean-product-assets
+          path: fetched-assets/*
