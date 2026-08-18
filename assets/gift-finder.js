@@ -1,0 +1,8 @@
+(()=>{
+ const root=document.querySelector('[data-gift-finder]');if(!root)return;
+ const buttons=[...root.querySelectorAll('[data-filter-type]')],cards=[...document.querySelectorAll('[data-gift-card]')],status=document.querySelector('[data-gift-status]'),reset=document.querySelector('[data-gift-reset]');
+ const state={persona:'todos',presupuesto:'todos',aficion:'todos'};
+ function matches(card,type,value){if(value==='todos')return true;const values=(card.dataset[type]||'').split(',').map(v=>v.trim()).filter(Boolean);return values.includes(value)||values.includes('todos')}
+ function apply(){let visible=0;cards.forEach(card=>{const ok=Object.entries(state).every(([type,value])=>matches(card,type,value));card.hidden=!ok;if(ok)visible++});buttons.forEach(b=>b.classList.toggle('active',state[b.dataset.filterType]===b.dataset.filterValue));if(status){const labels=[];if(state.persona!=='todos')labels.push(root.querySelector(`[data-filter-type="persona"][data-filter-value="${state.persona}"]`)?.dataset.label||state.persona);if(state.presupuesto!=='todos')labels.push(root.querySelector(`[data-filter-type="presupuesto"][data-filter-value="${state.presupuesto}"]`)?.dataset.label||state.presupuesto);if(state.aficion!=='todos')labels.push(root.querySelector(`[data-filter-type="aficion"][data-filter-value="${state.aficion}"]`)?.dataset.label||state.aficion);status.textContent=labels.length?`${visible} guías para ${labels.join(' · ')}`:`${visible} formas de empezar`}}
+ buttons.forEach(b=>b.addEventListener('click',()=>{state[b.dataset.filterType]=b.dataset.filterValue;apply()}));reset?.addEventListener('click',()=>{Object.keys(state).forEach(k=>state[k]='todos');apply()});apply();
+})();
