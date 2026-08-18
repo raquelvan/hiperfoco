@@ -83,8 +83,8 @@ function auditHtml(file){
       if(!fs.existsSync(abs))errors.push(`${rel}: imagen local inexistente ${src}`);
       else{
         const size=fs.statSync(abs).size;
-        const context=html.slice(Math.max(0,m.index-180),Math.min(html.length,m.index+tag.length+180));
-        const large=/product-media|page-product-media|guide-image|hero-product|hf-guide-pick-media|gift4-media|reviewCard|hub-media/i.test(context);
+        const context=html.slice(Math.max(0,m.index-220),Math.min(html.length,m.index+tag.length+220));
+        const large=/product-media|page-product-media|guide-image|hero-product|hf-guide-pick-media|gift4-media|gift-image|reviewCard|hub-media/i.test(context);
         if(large&&size<25000)errors.push(`${rel}: imagen demasiado pequeña para tarjeta grande (${src}, ${Math.round(size/1024)} KB)`);
       }
     }
