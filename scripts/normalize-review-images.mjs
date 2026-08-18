@@ -14,6 +14,7 @@ const byName=[
   [/sony.*wh.?ch720n/i,'/assets/approved/sony-ch720n-v1.jpg']
 ];
 const imageFor=name=>byName.find(([rx])=>rx.test(String(name||'')))?.[1]||'';
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 let changed=0;
 for(const name of fs.readdirSync(dir)){
   if(!name.endsWith('.html')||name==='index.html')continue;
@@ -31,6 +32,10 @@ for(const name of fs.readdirSync(dir)){
   });
   const next=m[1]+JSON.stringify(data)+m[3];
   html=html.slice(0,m.index)+next+html.slice(m.index+m[0].length);
+  if(!/<h1\b/i.test(html)&&!html.includes('data-review-static-fallback')){
+    const fallback=`<main data-review-static-fallback class="review-shell" style="padding:32px 0"><h1>${esc(data.name)}</h1><p>${esc(data.intro||'Análisis independiente de Hiperfoco.')}</p></main>`;
+    html=html.replace(/<body>/i,`<body>${fallback}`);
+  }
   fs.writeFileSync(file,html);changed++;
 }
-console.log(`✓ JSON de reviews normalizado con imágenes locales aprobadas: ${changed} páginas.`);
+console.log(`✓ Reviews normalizadas: imágenes locales aprobadas + H1 estático de respaldo en ${changed} páginas.`);
