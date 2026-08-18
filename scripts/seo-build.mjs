@@ -7,6 +7,8 @@ const SECTION_NAMES = {
   reviews: 'Reseñas', guias: 'Guías', regalos: 'Regalos', categoria: 'Categorías',
   comparativas: 'Comparativas', selecciones: 'Selecciones'
 };
+const NOINDEX_FILES = new Set(['404.html','gracias-contacto.html','cookies.html','privacidad.html','aviso-legal.html']);
+const LEGACY_PREFIXES = ['categorias/','necesidades/','legal/'];
 
 const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const strip = s => String(s ?? '').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/\s+/g,' ').trim();
@@ -30,6 +32,9 @@ function ensureTitle(html, title) {
 }
 function canonicalFor(rel) {
   let p = rel.replace(/\\/g,'/');
+  if (p.startsWith('categorias/')) p = 'categoria/' + p.slice('categorias/'.length);
+  if (p.startsWith('necesidades/')) p = 'selecciones/' + p.slice('necesidades/'.length);
+  if (p.startsWith('legal/')) p = p.slice('legal/'.length);
   if (p === 'index.html') return `${BASE}/`;
   if (p.endsWith('/index.html')) return `${BASE}/${p.slice(0,-10)}`;
   return `${BASE}/${p}`;
@@ -72,6 +77,15 @@ function brandFrom(name='') {
   if (/Philips/i.test(name)) return 'Philips';
   if (/Nespresso/i.test(name)) return 'Nespresso';
   if (/Ninja/i.test(name)) return 'Ninja';
+  if (/JBL/i.test(name)) return 'JBL';
+  if (/Sony/i.test(name)) return 'Sony';
+  if (/Anker/i.test(name)) return 'Anker';
+  if (/TP-?Link|Tapo/i.test(name)) return 'TP-Link';
+  if (/Apple|AirTag/i.test(name)) return 'Apple';
+  if (/Fujifilm|Instax/i.test(name)) return 'Fujifilm';
+  if (/LEGO/i.test(name)) return 'LEGO';
+  if (/Kodak/i.test(name)) return 'Kodak';
+  if (/Amazon Echo|Fire TV|Kindle/i.test(name)) return 'Amazon';
   return '';
 }
 function addJsonLd(html, id, data) {
@@ -80,7 +94,7 @@ function addJsonLd(html, id, data) {
 }
 function breadcrumbData(rel, title, canonical) {
   const p = rel.replace(/\\/g,'/');
-  if (!p.includes('/')) return null;
+  if (!p.includes('/') || p.endsWith('/index.html') || LEGACY_PREFIXES.some(x=>p.startsWith(x))) return null;
   const [section] = p.split('/');
   const label = SECTION_NAMES[section];
   if (!label) return null;
@@ -103,12 +117,14 @@ function processHtml(file) {
   const title = titleFrom(html, rd, rel);
   const desc = descriptionFrom(html, rd);
   const image = imageFrom(html, rd);
-  const isArticle = /^(reviews|guias|regalos)\//.test(rel) && !rel.endsWith('/index.html');
+  const legacy = LEGACY_PREFIXES.some(x=>rel.startsWith(x));
+  const noindex = NOINDEX_FILES.has(rel) || legacy;
+  const isArticle = /^(reviews|guias|regalos|comparativas|selecciones)\//.test(rel) && !rel.endsWith('/index.html');
 
   html = ensureTitle(html,title);
   html = upsertMeta(html,'name','description',desc);
   html = upsertCanonical(html,canonical);
-  html = upsertMeta(html,'name','robots',rel === '404.html' ? 'noindex,follow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1');
+  html = upsertMeta(html,'name','robots',noindex ? 'noindex,follow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1');
   html = upsertMeta(html,'property','og:title',title);
   html = upsertMeta(html,'property','og:description',desc);
   html = upsertMeta(html,'property','og:type',isArticle ? 'article' : 'website');
