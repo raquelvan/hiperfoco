@@ -4,25 +4,35 @@
     'philips serie 3300 lattego':'/assets/images/product-philips-3300.webp',
     'delonghi rivelia':'/assets/images/product-rivelia.webp',
     'delonghi magnifica s':'/assets/images/product-magnifica-s.webp',
-    'philips serie 5500 lattego':'https://www.cf-dam.vbs.versuni.com/adaptivemedia/rendition?format=webp&height=2048&id=1b7fcdc9342844c53c459e83b581f786dec466bf&width=2048'
+    'philips serie 5500 lattego':'https://www.cf-dam.vbs.versuni.com/adaptivemedia/rendition?format=webp&height=2048&id=1b7fcdc9342844c53c459e83b581f786dec466bf&width=2048',
+    'jbl clip 5':'https://m.media-amazon.com/images/I/41jYyKRVqmL._AC_CX679_.jpg',
+    'jbl flip 6':'https://m.media-amazon.com/images/I/71H4arZ12jL._AC_SL1500_.jpg',
+    'sony wh ch720n':'https://m.media-amazon.com/images/I/51rpbVmi9XL._AC_SL1200_.jpg',
+    'razer blackshark v2 x':'https://m.media-amazon.com/images/I/71R8hF+vYkL._AC_SL1500_.jpg',
+    'anker nano power bank':'https://m.media-amazon.com/images/I/61pUul1oDlL._AC_SL1500_.jpg',
+    'anker cargador nano usb c':'https://m.media-amazon.com/images/I/51tVD2d2QmL._AC_SL1500_.jpg',
+    'amazon echo dot':'https://m.media-amazon.com/images/I/71xoR4A6q-L._AC_SL1000_.jpg',
+    'amazon fire tv stick 4k':'https://m.media-amazon.com/images/I/51TjJOTfslL._AC_SL1000_.jpg',
+    'tp link tapo c200':'https://m.media-amazon.com/images/I/51g3R+eJmJL._AC_SL1000_.jpg',
+    'kindle paperwhite':'https://m.media-amazon.com/images/I/81swm2WdawL._AC_SY741_.jpg',
+    'aeropress':'https://m.media-amazon.com/images/I/71u+LDMJQ5L._AC_SL1500_.jpg',
+    'hario v60':'https://m.media-amazon.com/images/I/61W0xEO3eML._AC_SL1500_.jpg',
+    'timemore c3':'https://m.media-amazon.com/images/I/61H6vCjKXQL._AC_SL1500_.jpg',
+    'wacaco nanopresso':'https://m.media-amazon.com/images/I/61yc+O3IuGL._AC_SL1500_.jpg',
+    'apple airtag':'https://m.media-amazon.com/images/I/314YPlM+dcS._SL500_.jpg',
+    'fujifilm instax mini 12':'https://m.media-amazon.com/images/I/61+jaO2GeDL.jpg',
+    'lego star wars r2 d2':'https://m.media-amazon.com/images/I/81qF8QW0WGL._AC_SL1500_.jpg',
+    '8bitdo ultimate controller':'https://m.media-amazon.com/images/I/61l7q7kXoIL._AC_SL1500_.jpg'
   };
   const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’']/g,'').replace(/[^a-z0-9]+/g,' ').trim();
-  function keyFor(img){
-    const card=img.closest('.card,.product-page-card,.comparison-card,.review-card,.gift4-product,article,a');
-    const text=[img.alt,card?.querySelector('h3')?.textContent,card?.querySelector('h2')?.textContent,document.querySelector('h1')?.textContent].filter(Boolean).join(' ');
-    const n=norm(text);
-    return Object.keys(IMAGES).find(k=>n.includes(norm(k)))||null;
-  }
-  function apply(){
-    document.querySelectorAll('img').forEach(img=>{
-      const key=keyFor(img);if(!key)return;
-      const src=IMAGES[key];
-      if(img.dataset.hfCleanProduct===key)return;
-      img.dataset.hfCleanProduct=key;
-      img.removeAttribute('srcset');img.src=src;
-      img.style.objectFit='contain';img.style.objectPosition='center';img.style.mixBlendMode='normal';img.style.background='#fff';
-    });
-  }
+  const KEYS=Object.keys(IMAGES);
+  const cardSel='.card,.product-page-card,.comparison-card,.review-card,.reviewCard,.gift4-product,.hf-selection-card,.hf-guide-pick,article.product-card,a.product-card';
+  function keyForNode(node){const text=[node?.getAttribute?.('alt'),node?.querySelector?.('h3')?.textContent,node?.querySelector?.('h2')?.textContent,node?.querySelector?.('.product-name')?.textContent].filter(Boolean).join(' ');const n=norm(text);return KEYS.find(k=>n.includes(norm(k)))||null}
+  function keyForImg(img){const card=img.closest(cardSel);const text=[img.alt,card?.textContent,document.querySelector('h1')?.textContent].filter(Boolean).join(' ');const n=norm(text);return KEYS.find(k=>n.includes(norm(k)))||null}
+  function prep(img,key){img.dataset.hfCleanProduct=key;img.removeAttribute('srcset');img.src=IMAGES[key];img.loading=img.loading||'lazy';img.decoding='async';img.style.objectFit='contain';img.style.objectPosition='center';img.style.mixBlendMode='normal';img.style.background='#fff';img.onerror=()=>{img.style.display='none';img.closest('.hf-auto-product-media,.page-product-media,.hf-selection-media,.hf-guide-pick-media,.gift4-media,.cardMedia')?.classList.add('hf-photo-missing')}}
+  function ensureCardImages(){document.querySelectorAll(cardSel).forEach(card=>{const key=keyForNode(card);if(!key)return;let img=card.querySelector('img');if(img){if(img.dataset.hfCleanProduct!==key)prep(img,key);return}let media=card.querySelector('.page-product-media,.hf-selection-media,.hf-guide-pick-media,.gift4-media,.cardMedia,.product-media');if(!media){media=document.createElement('div');media.className='hf-auto-product-media';card.prepend(media)}img=document.createElement('img');img.alt=(card.querySelector('h3,h2')?.textContent||key).trim();media.appendChild(img);prep(img,key)})}
+  function apply(){document.querySelectorAll('img').forEach(img=>{const key=keyForImg(img);if(key&&img.dataset.hfCleanProduct!==key)prep(img,key)});ensureCardImages()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
-  new MutationObserver(apply).observe(document.documentElement,{childList:true,subtree:true});window.addEventListener('load',apply);
+  window.addEventListener('load',apply);setTimeout(apply,250);setTimeout(apply,900);
+  new MutationObserver(()=>requestAnimationFrame(apply)).observe(document.documentElement,{childList:true,subtree:true});
 })();
