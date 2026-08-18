@@ -1,6 +1,6 @@
 # Affiliate price sync trigger: 2026-08-17
 [build]
-  command = "node scripts/merge-affiliate-overrides.mjs && node scripts/affiliate-sync.mjs && node scripts/inject-gift-fallback.mjs && node scripts/seo-build.mjs && node scripts/weekly-inject.mjs && node scripts/inject-affiliate-catalog.mjs && node scripts/inject-product-image-fixes.mjs && node scripts/inject-shell-ux.mjs && node scripts/build-sitemap.mjs"
+  command = "node scripts/merge-affiliate-overrides.mjs && node scripts/affiliate-sync.mjs && node scripts/restore-approved-images.mjs && node scripts/inject-gift-fallback.mjs && node scripts/weekly-inject.mjs && node scripts/fix-static-images.mjs && node scripts/seo-build.mjs && node scripts/inject-affiliate-catalog.mjs && node scripts/inject-product-image-fixes.mjs && node scripts/inject-shell-ux.mjs && node scripts/build-sitemap.mjs && node scripts/preflight-audit.mjs"
   publish = "."
 
 # Consolidación de URLs legacy: una sola URL canónica por intención.
