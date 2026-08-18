@@ -1,0 +1,31 @@
+/* Auditoría visual: overrides quirúrgicos, no rediseño global. */
+
+/* Hub de categorías: elimina el bloque vacío gigante que mostraba iconos diminutos. */
+.hub-hero + .category-visual-grid{gap:14px}
+.hub-hero + .category-visual-grid .category-visual-card{display:grid;grid-template-columns:62px minmax(0,1fr);align-items:start;padding:18px;gap:13px;overflow:visible;min-height:178px}
+.hub-hero + .category-visual-grid .category-visual-top{width:52px;height:52px;min-height:52px;padding:0;margin:0;border-radius:16px;background:var(--sage);display:grid;place-items:center;font:500 1.55rem/1 Georgia,"Times New Roman",serif;color:var(--green);overflow:hidden}
+.hub-hero + .category-visual-grid .category-visual-copy{padding:3px 0 0}
+.hub-hero + .category-visual-grid .category-visual-copy h3{font-size:1.3rem;margin:0 0 7px}
+.hub-hero + .category-visual-grid .category-visual-copy p{font-size:.79rem;line-height:1.5;min-height:2.4em}
+.hub-hero + .category-visual-grid .category-chips{margin-top:11px}
+.hub-hero + .category-visual-grid .category-chips span{font-size:.61rem}
+
+/* Los productos nunca se recortan. */
+.product-media img,.page-product-media img,.hero-product img,.hf-selection-media img,.hf-guide-pick-media img,.gift4-media img,.reviewCard img{object-fit:contain!important;object-position:center!important}
+
+/* Las imágenes editoriales de guías sí rellenan su marco. */
+.guide-image img,.guide-card .guide-image img{object-fit:cover!important;object-position:center!important}
+
+/* Evita que un fallback roto deje un gran bloque blanco. */
+.hf-photo-missing{position:relative;background:linear-gradient(145deg,#f4f7f5,#eaf1ed)!important}
+.hf-photo-missing:after{content:'Imagen en revisión';font-size:.69rem;font-weight:800;color:var(--muted);position:absolute;inset:0;display:grid;place-items:center}
+
+@media(max-width:1080px){
+ .hub-hero + .category-visual-grid .category-visual-card{grid-template-columns:52px 1fr;padding:16px;min-height:165px}
+ .hub-hero + .category-visual-grid .category-visual-top{width:44px;height:44px;min-height:44px;border-radius:13px;font-size:1.3rem}
+}
+@media(max-width:620px){
+ .hub-hero + .category-visual-grid{grid-template-columns:1fr!important}
+ .hub-hero + .category-visual-grid .category-visual-card{min-height:0}
+ .hub-hero + .category-visual-grid .category-visual-copy p{display:block;min-height:0}
+}
