@@ -4,9 +4,9 @@
     'philips serie 3300 lattego':'/assets/approved/philips-3300-v3.jpg',
     'delonghi rivelia':'/assets/approved/rivelia-v3.jpg',
     'delonghi magnifica s':'/assets/approved/magnifica-s-v3.jpg',
-    'philips serie 5500 lattego':'/assets/approved/philips-5500-v3.webp',
+    'philips serie 5500 lattego':'/assets/approved/philips-5500-v4.png',
     'jbl clip 5':'https://m.media-amazon.com/images/I/41jYyKRVqmL._AC_CX679_.jpg',
-    'jbl flip 6':'https://m.media-amazon.com/images/I/71H4arZ12jL._AC_SL1500_.jpg',
+    'jbl flip 6':'/assets/approved/jbl-flip6-v1.png',
     'sony wh ch720n':'https://m.media-amazon.com/images/I/51rpbVmi9XL._AC_SL1200_.jpg'
   };
   const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’']/g,'').replace(/[^a-z0-9]+/g,' ').trim();
