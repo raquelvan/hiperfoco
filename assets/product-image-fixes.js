@@ -1,10 +1,10 @@
 (()=>{
   const FALLBACKS={
-    'delonghi magnifica evo':'/assets/images/product-magnifica-evo.webp',
-    'philips serie 3300 lattego':'/assets/images/product-philips-3300.webp',
-    'delonghi rivelia':'/assets/images/product-rivelia.webp',
-    'delonghi magnifica s':'/assets/images/product-magnifica-s.webp',
-    'philips serie 5500 lattego':'https://images.philips.com/is/image/philipsconsumer/vrs_985a5521_0beb_4817_914c3fe3bfafc0f8?%24png%24=&fit=constrain&hei=410&wid=410',
+    'delonghi magnifica evo':'/assets/approved/magnifica-evo.jpg',
+    'philips serie 3300 lattego':'/assets/approved/philips-3300.jpg',
+    'delonghi rivelia':'/assets/approved/rivelia.jpg',
+    'delonghi magnifica s':'/assets/approved/magnifica-s.jpg',
+    'philips serie 5500 lattego':'/assets/approved/philips-5500.webp',
     'jbl clip 5':'https://m.media-amazon.com/images/I/41jYyKRVqmL._AC_CX679_.jpg',
     'jbl flip 6':'https://m.media-amazon.com/images/I/71H4arZ12jL._AC_SL1500_.jpg',
     'sony wh ch720n':'https://m.media-amazon.com/images/I/51rpbVmi9XL._AC_SL1200_.jpg'
