@@ -5,7 +5,8 @@ if(!base) throw new Error('Falta URL de preview');
 
 const pages=[
   ['home','/'],['regalos','/regalos/'],['reviews','/reviews/'],['cafe','/categoria/cafe.html'],
-  ['categorias','/categoria/'],['comparativas','/comparativas/'],['guias','/guias/'],['selecciones','/selecciones/']
+  ['categorias','/categoria/'],['comparativas','/comparativas/'],['guias','/guias/'],['selecciones','/selecciones/'],
+  ['review-magnifica-s','/reviews/delonghi-magnifica-s.html'],['review-philips-3300','/reviews/philips-3300-lattego.html']
 ];
 const sizes=[['desktop',{width:1440,height:1000}],['mobile',{width:390,height:844}]];
 const browser=await chromium.launch({headless:true});
@@ -23,25 +24,57 @@ for(const [label,viewport] of sizes){
     await page.evaluate(async()=>{
       const sleep=ms=>new Promise(r=>setTimeout(r,ms));
       const step=Math.max(300,Math.floor(innerHeight*.65));
-      for(let y=0;y<document.documentElement.scrollHeight;y+=step){scrollTo(0,y);await sleep(70)}
-      scrollTo(0,0);await sleep(250);
+      for(let y=0;y<document.documentElement.scrollHeight;y+=step){scrollTo(0,y);await sleep(80)}
+      scrollTo(0,0);await sleep(350);
     });
-    await page.waitForTimeout(350);
-    const result=await page.evaluate(()=>{
+    await page.waitForTimeout(450);
+    const result=await page.evaluate((pageName)=>{
       const broken=[...document.images].filter(img=>!img.complete||img.naturalWidth===0).map(img=>({src:img.currentSrc||img.src,alt:img.alt||''}));
+      const emptyAlt=[...document.images].filter(img=>!String(img.alt||'').trim()).map(img=>img.currentSrc||img.src);
       const overflow=document.documentElement.scrollWidth>window.innerWidth+3;
       const overflowBy=document.documentElement.scrollWidth-window.innerWidth;
-      return {broken,overflow,overflowBy,images:document.images.length};
-    });
+      const lowRes=[...document.querySelectorAll('.gift-image img,.guide-image img')]
+        .filter(img=>img.naturalWidth>0&&img.getBoundingClientRect().width>120&&img.naturalWidth<600)
+        .map(img=>({src:img.currentSrc||img.src,w:img.naturalWidth,shown:Math.round(img.getBoundingClientRect().width)}));
+      const forbidden=[...document.images].filter(img=>/assets\/images\/(product-|gift-)/.test(img.currentSrc||img.src)).map(img=>img.currentSrc||img.src);
+      const checks={};
+      if(pageName==='home'){
+        checks.homeReviews=document.querySelectorAll('.review-grid>.card img').length;
+        checks.homeGuides=document.querySelectorAll('.guide-grid>.card img').length;
+        checks.homeGifts=document.querySelectorAll('.gifts>.gift img').length;
+      }
+      if(pageName.startsWith('review-')){
+        checks.budgetImages=document.querySelectorAll('.budget-compact-wrap .money img,.budget-compact-wrap .hf-auto-product-media').length;
+        checks.heroImages=document.querySelectorAll('.review-product img').length;
+      }
+      if(pageName==='reviews') checks.reviewCardsMissing=[...document.querySelectorAll('[data-review-card],.reviews-grid>.card,.review-grid>.card')].filter(c=>!c.querySelector('img')).length;
+      if(pageName==='comparativas') checks.comparisonMissing=[...document.querySelectorAll('.hub-card')].filter(c=>!c.querySelector('img')).length;
+      if(pageName==='cafe') checks.cafeMissing=[...document.querySelectorAll('.hub-card,.product-page-card,.reviewCard')].filter(c=>/Magnifica|Philips|Rivelia/i.test(c.textContent)&&!c.querySelector('img')).length;
+      return {broken,emptyAlt,overflow,overflowBy,lowRes,forbidden,images:document.images.length,checks};
+    },name);
     if(result.broken.length) failures.push(`${name}-${label}: ${result.broken.length} imágenes rotas: ${result.broken.map(x=>x.alt||x.src).join(' | ')}`);
+    if(result.emptyAlt.length) failures.push(`${name}-${label}: ${result.emptyAlt.length} imágenes sin alt`);
     if(result.overflow) failures.push(`${name}-${label}: desbordamiento horizontal de ${result.overflowBy}px`);
-    if(consoleErrors.length) console.warn(`${name}-${label}: errores JS no bloqueantes: ${consoleErrors.join(' | ')}`);
+    if(result.lowRes.length) failures.push(`${name}-${label}: imágenes editoriales con resolución insuficiente: ${result.lowRes.map(x=>`${x.w}px ${x.src}`).join(' | ')}`);
+    if(result.forbidden.length) failures.push(`${name}-${label}: siguen cargándose thumbnails legacy: ${result.forbidden.join(' | ')}`);
+    if(name==='home'){
+      if(result.checks.homeReviews!==4) failures.push(`${name}-${label}: Últimas reseñas debe tener 4 fotos y tiene ${result.checks.homeReviews}`);
+      if(result.checks.homeGuides!==5) failures.push(`${name}-${label}: Guías populares debe tener 5 fotos y tiene ${result.checks.homeGuides}`);
+      if(result.checks.homeGifts!==6) failures.push(`${name}-${label}: Regalos debe tener 6 fotos y tiene ${result.checks.homeGifts}`);
+    }
+    if(name.startsWith('review-')){
+      if(result.checks.budgetImages!==0) failures.push(`${name}-${label}: Qué opción elegir no debe contener fotos automáticas (${result.checks.budgetImages})`);
+      if(result.checks.heroImages!==1) failures.push(`${name}-${label}: hero de review debe tener exactamente 1 foto (${result.checks.heroImages})`);
+    }
+    if(result.checks.comparisonMissing>0) failures.push(`${name}-${label}: ${result.checks.comparisonMissing} comparativas sin foto`);
+    if(result.checks.cafeMissing>0) failures.push(`${name}-${label}: ${result.checks.cafeMissing} tarjetas de cafeteras sin foto`);
+    if(consoleErrors.length) console.warn(`${name}-${label}: errores JS: ${consoleErrors.join(' | ')}`);
     await page.screenshot({path:`qa-${name}-${label}.png`,fullPage:true});
-    console.log(`✓ ${name}-${label}: ${result.images} imágenes cargadas, sin overflow${result.broken.length?' (con roturas)':''}`);
+    console.log(`✓ ${name}-${label}: ${result.images} imágenes; checks=${JSON.stringify(result.checks)}`);
     await page.close();
   }
   await context.close();
 }
 await browser.close();
-if(failures.length){console.error(failures.join('\n'));process.exit(1)}
-console.log('✓ QA visual responsive completa: todas las imágenes cargan y no hay desbordamientos horizontales.');
+if(failures.length){console.error('\nQA VISUAL FALLIDA\n'+failures.join('\n'));process.exit(1)}
+console.log('✓ QA visual completa: imágenes presentes, sin thumbnails legacy, sin inyección en presupuesto, sin overflow y con resolución editorial suficiente.');
