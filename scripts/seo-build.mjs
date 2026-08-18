@@ -9,6 +9,65 @@ const SECTION_NAMES = {
 };
 const NOINDEX_FILES = new Set(['404.html','gracias-contacto.html','cookies.html','privacidad.html','aviso-legal.html']);
 const LEGACY_PREFIXES = ['categorias/','necesidades/','legal/'];
+const SEO_OVERRIDES = {
+  'como-nos-financiamos.html': {
+    description: 'Así se financia Hiperfoco: afiliación, colaboraciones transparentes y apoyo de lectores, sin vender posiciones editoriales.'
+  },
+  'guias/como-elegir-cafetera-superautomatica.html': {
+    title: 'Cómo elegir cafetera superautomática | Hiperfoco'
+  },
+  'guias/elegir-airfryer.html': {
+    title: 'Cómo elegir una airfryer: tamaño y capacidad | Hiperfoco'
+  },
+  'guias/limpiar-cafetera-superautomatica.html': {
+    title: 'Cómo limpiar una cafetera superautomática | Hiperfoco'
+  },
+  'guias/purificador-aire-alergia-polen-cadr.html': {
+    title: 'Purificador para alergia y polen: guía CADR | Hiperfoco'
+  },
+  'regalos/casa-inteligente.html': {
+    title: 'Regalos para casa inteligente: ideas útiles | Hiperfoco'
+  },
+  'regalos/regalos-menos-de-30-euros.html': {
+    title: 'Regalos por menos de 30 €: ideas útiles | Hiperfoco'
+  },
+  'regalos/regalos-menos-de-50-euros.html': {
+    title: 'Regalos por menos de 50 €: ideas que sí sirven | Hiperfoco'
+  },
+  'regalos/regalos-para-amantes-musica.html': {
+    title: 'Regalos para amantes de la música | Hiperfoco'
+  },
+  'regalos/regalos-para-frikis.html': {
+    title: 'Regalos para frikis: tecnología, gaming y más | Hiperfoco'
+  },
+  'regalos/regalos-para-novia.html': {
+    title: 'Regalos para novia: ideas útiles y originales | Hiperfoco'
+  },
+  'regalos/regalos-para-novio.html': {
+    title: 'Regalos para novio: ideas útiles y originales | Hiperfoco'
+  },
+  'regalos/viajeros.html': {
+    title: 'Regalos para viajeros: ideas prácticas | Hiperfoco'
+  },
+  'selecciones/cocina-pequena.html': {
+    description: 'Cafeteras y productos elegidos para cocinas pequeñas: menos fondo, menos espacio ocupado y uso cómodo sin renunciar a lo importante.'
+  },
+  'selecciones/dos-personas.html': {
+    description: 'Selección de cafeteras para dos personas según bebidas, limpieza, tamaño, presupuesto y facilidad para cambiar ajustes y perfiles.'
+  },
+  'selecciones/limpiar-poco.html': {
+    description: 'Cafeteras para quien quiere limpiar poco: sistemas de leche sencillos, grupos accesibles y rutinas de mantenimiento con menos fricción.'
+  },
+  'selecciones/mejor-cafe.html': {
+    description: 'Cafeteras para priorizar el sabor del café: molienda, temperatura, ajuste de intensidad y alternativas según presupuesto y comodidad.'
+  },
+  'selecciones/menos-300.html': {
+    description: 'Cafeteras por menos de 300 € seleccionadas por facilidad de uso, calidad de café, mantenimiento y relación calidad-precio real.'
+  },
+  'selecciones/silencioso.html': {
+    description: 'Cafeteras para hogares donde importa el ruido: molienda, preparación y uso diario comparados para elegir una opción más discreta.'
+  }
+};
 
 const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const strip = s => String(s ?? '').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/\s+/g,' ').trim();
@@ -50,6 +109,7 @@ function firstText(html, selector) {
   return m ? strip(m[1]) : '';
 }
 function titleFrom(html, rd, rel) {
+  if (SEO_OVERRIDES[rel]?.title) return SEO_OVERRIDES[rel].title;
   const existing = html.match(/<title>([\s\S]*?)<\/title>/i);
   if (existing && strip(existing[1])) return strip(existing[1]);
   if (rd?.name) return `${rd.name}: análisis, opinión y precio | Hiperfoco`;
@@ -58,10 +118,16 @@ function titleFrom(html, rd, rel) {
   if (rel === '404.html') return 'Página no encontrada | Hiperfoco';
   return 'Hiperfoco — Reviews, comparativas y guías para comprar mejor';
 }
-function descriptionFrom(html, rd) {
-  const m = html.match(/<meta\s+[^>]*name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>/i)
-        || html.match(/<meta\s+[^>]*content=["']([^"']*)["'][^>]*name=["']description["'][^>]*>/i);
-  if (m?.[1]) return strip(m[1]);
+function descriptionFrom(html, rd, rel) {
+  if (SEO_OVERRIDES[rel]?.description) return SEO_OVERRIDES[rel].description;
+  const patterns = [
+    /<meta\s+[^>]*name=["']description["'][^>]*content=(["'])([\s\S]*?)\1[^>]*>/i,
+    /<meta\s+[^>]*content=(["'])([\s\S]*?)\1[^>]*name=["']description["'][^>]*>/i
+  ];
+  for (const rx of patterns) {
+    const m = html.match(rx);
+    if (m?.[2]) return strip(m[2]);
+  }
   if (rd?.intro) return strip(rd.intro).slice(0,160);
   const p = firstText(html, 'p');
   return (p || 'Reviews, comparativas y guías de compra independientes para elegir mejor.').slice(0,160);
@@ -115,7 +181,7 @@ function processHtml(file) {
   const rd = reviewData(html);
   const canonical = canonicalFor(rel);
   const title = titleFrom(html, rd, rel);
-  const desc = descriptionFrom(html, rd);
+  const desc = descriptionFrom(html, rd, rel);
   const image = imageFrom(html, rd);
   const legacy = LEGACY_PREFIXES.some(x=>rel.startsWith(x));
   const noindex = NOINDEX_FILES.has(rel) || legacy;

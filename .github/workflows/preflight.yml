@@ -13,8 +13,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Build sin despliegue
+      - name: Build exacto de Netlify
         run: |
+          node scripts/fetch-approved-product-images.mjs
           node scripts/merge-affiliate-overrides.mjs
           node scripts/affiliate-sync.mjs
           node scripts/restore-approved-images.mjs
@@ -26,6 +27,8 @@ jobs:
           node scripts/inject-affiliate-catalog.mjs
           node scripts/inject-product-image-fixes.mjs
           node scripts/inject-shell-ux.mjs
+          node scripts/apply-approved-product-images.mjs
+          node scripts/approved-image-audit.mjs
           node scripts/build-sitemap.mjs
           node scripts/home-image-audit.mjs
       - name: Auditoría estricta
@@ -40,24 +43,19 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           URL="https://deploy-preview-${{ github.event.number }}--hiperfoco.netlify.app"
-          for i in {1..30}; do
+          for i in {1..45}; do
             if curl -fsS "$URL" >/dev/null; then exit 0; fi
             sleep 4
           done
           exit 1
-      - name: Instalar navegador QA
+      - name: Instalar Playwright para QA
         if: github.event_name == 'pull_request'
-        run: npx -y playwright@1.55.0 install --with-deps chromium
-      - name: Capturas visuales de preview
-        if: github.event_name == 'pull_request'
-        continue-on-error: true
         run: |
-          URL="https://deploy-preview-${{ github.event.number }}--hiperfoco.netlify.app"
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL" qa-home-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page "$URL" qa-home-mobile.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL/regalos/" qa-regalos-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL/reviews/" qa-reviews-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL/categoria/cafe.html" qa-cafe-desktop.png
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install chromium
+      - name: QA visual responsive con scroll real
+        if: github.event_name == 'pull_request'
+        run: node scripts/visual-qa.mjs "https://deploy-preview-${{ github.event.number }}--hiperfoco.netlify.app"
       - name: Guardar capturas QA
         if: always() && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4

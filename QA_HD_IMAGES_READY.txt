@@ -1,0 +1,1 @@
+Deploy Preview requerida. No fusionar sin revisar visualmente Home, Reseñas y Café en desktop y móvil.

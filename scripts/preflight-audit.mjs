@@ -13,6 +13,14 @@ const placeholderRx=/contenido en preparaci[oó]n|pr[oó]ximamente|lorem ipsum|f
 const normRel=p=>path.relative(ROOT,p).replaceAll('\\','/');
 const strip=s=>String(s||'').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/\s+/g,' ').trim();
 const attr=(tag,name)=>{const m=tag.match(new RegExp(`${name}=["']([^"']*)["']`,'i'));return m?.[1]||''};
+const metaDescription=html=>{
+  const patterns=[
+    /<meta\s+[^>]*name=["']description["'][^>]*content=(["'])([\s\S]*?)\1[^>]*>/i,
+    /<meta\s+[^>]*content=(["'])([\s\S]*?)\1[^>]*name=["']description["'][^>]*>/i
+  ];
+  for(const rx of patterns){const m=html.match(rx);if(m?.[2])return m[2];}
+  return '';
+};
 const isNoindex=html=>/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(html);
 
 function walk(dir){
@@ -63,7 +71,7 @@ function auditHtml(file){
   const noindex=isNoindex(html);
   const legacy=legacyPrefixes.some(p=>rel.startsWith(p));
   const title=strip(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]);
-  const desc=html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i)?.[1]||html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["']/i)?.[1]||'';
+  const desc=metaDescription(html);
   const canonical=html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)?.[1]||html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i)?.[1]||'';
   const h1s=[...html.matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/gi)].map(m=>strip(m[1]));
   const reviewRenderer=/<script[^>]+id=["']review-data["'][^>]*>/i.test(html)&&/product-review\.js/i.test(html);
