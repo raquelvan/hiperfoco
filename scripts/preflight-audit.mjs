@@ -37,6 +37,26 @@ function resolveLocal(baseRel,url){
   return target;
 }
 
+function imageDimensions(file){
+  try{
+    const b=fs.readFileSync(file);
+    if(b.length>=24&&b.toString('ascii',1,4)==='PNG')return{w:b.readUInt32BE(16),h:b.readUInt32BE(20)};
+    if(b.length>=30&&b.toString('ascii',0,4)==='RIFF'&&b.toString('ascii',8,12)==='WEBP'){
+      const type=b.toString('ascii',12,16);
+      if(type==='VP8X'&&b.length>=30)return{w:1+b.readUIntLE(24,3),h:1+b.readUIntLE(27,3)};
+      if(type==='VP8 '){
+        for(let i=20;i<Math.min(b.length-7,80);i++)if(b[i]===0x9d&&b[i+1]===0x01&&b[i+2]===0x2a)return{w:b.readUInt16LE(i+3)&0x3fff,h:b.readUInt16LE(i+5)&0x3fff};
+      }
+      if(type==='VP8L'&&b.length>=25){const bits=b.readUInt32LE(21);return{w:(bits&0x3fff)+1,h:((bits>>14)&0x3fff)+1};}
+    }
+    if(b.length>4&&b[0]===0xff&&b[1]===0xd8){
+      let i=2;
+      while(i+9<b.length){if(b[i]!==0xff){i++;continue;}const marker=b[i+1];if([0xc0,0xc1,0xc2,0xc3,0xc5,0xc6,0xc7,0xc9,0xca,0xcb,0xcd,0xce,0xcf].includes(marker))return{h:b.readUInt16BE(i+5),w:b.readUInt16BE(i+7)};const len=b.readUInt16BE(i+2);if(!len)break;i+=2+len;}
+    }
+  }catch{}
+  return null;
+}
+
 function auditHtml(file){
   const rel=normRel(file);
   const html=fs.readFileSync(file,'utf8');
@@ -82,10 +102,11 @@ function auditHtml(file){
       const abs=path.join(ROOT,local);
       if(!fs.existsSync(abs))errors.push(`${rel}: imagen local inexistente ${src}`);
       else{
-        const size=fs.statSync(abs).size;
         const context=html.slice(Math.max(0,m.index-220),Math.min(html.length,m.index+tag.length+220));
         const large=/product-media|page-product-media|guide-image|hero-product|hf-guide-pick-media|gift4-media|gift-image|reviewCard|hub-media/i.test(context);
-        if(large&&size<25000)errors.push(`${rel}: imagen demasiado pequeña para tarjeta grande (${src}, ${Math.round(size/1024)} KB)`);
+        const dim=imageDimensions(abs);
+        if(large&&dim&&(dim.w<300||dim.h<240))errors.push(`${rel}: imagen con resolución insuficiente para tarjeta grande (${src}, ${dim.w}×${dim.h})`);
+        if(large&&!dim&&fs.statSync(abs).size<12000)warnings.push(`${rel}: no se pudo validar resolución de imagen pequeña (${src})`);
       }
     }
   }
