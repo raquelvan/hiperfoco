@@ -3,14 +3,12 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const rules = [
-  { terms:['de’longhi magnifica evo','de\'longhi magnifica evo','delonghi magnifica evo'], src:'/assets/approved/magnifica-evo.jpg' },
+  { terms:['de’longhi magnifica evo',"de'longhi magnifica evo",'delonghi magnifica evo'], src:'/assets/approved/magnifica-evo.jpg' },
   { terms:['philips serie 3300 lattego','philips 3300 lattego'], src:'/assets/approved/philips-3300.jpg' },
-  { terms:['de’longhi rivelia','de\'longhi rivelia','delonghi rivelia'], src:'/assets/approved/rivelia.jpg' },
-  { terms:['de’longhi magnifica s','de\'longhi magnifica s','delonghi magnifica s'], src:'/assets/approved/magnifica-s.jpg' },
+  { terms:['de’longhi rivelia',"de'longhi rivelia",'delonghi rivelia'], src:'/assets/approved/rivelia.jpg' },
+  { terms:['de’longhi magnifica s',"de'longhi magnifica s",'delonghi magnifica s'], src:'/assets/approved/magnifica-s.jpg' },
   { terms:['philips serie 5500 lattego','philips 5500 lattego'], src:'/assets/approved/philips-5500.webp' }
 ];
-
-const norm = s => String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’']/g,"'").replace(/\s+/g,' ').trim();
 
 async function files(dir){
   const out=[];
@@ -23,31 +21,62 @@ async function files(dir){
   return out;
 }
 
-function replaceCardImages(html){
-  // Procesa bloques de tarjeta/enlace/div/section relativamente pequeños y sustituye únicamente la imagen del producto exacto.
-  return html.replace(/<(a|article|div|section)\b[^>]*>[\s\S]{0,5000}?<\/\1>/gi, block => {
-    const text=norm(block.replace(/<[^>]+>/g,' '));
-    const rule=rules.find(r=>r.terms.some(t=>text.includes(norm(t))));
-    if(!rule) return block;
-    if(/<img\b/i.test(block)){
-      return block.replace(/<img\b([^>]*?)\bsrc=(['"])[^'"]*\2([^>]*)>/i,(m,a,q,b)=>{
-        let attrs=(a+b).replace(/\s+srcset=(['"])[\s\S]*?\1/gi,'').replace(/\s+data-src=(['"])[\s\S]*?\1/gi,'');
-        if(!/\balt=/i.test(attrs)) attrs += ` alt="${rule.terms[0]}"`;
-        return `<img${attrs} src="${rule.src}">`;
-      });
+function replaceSrcInTag(tag, src, alt){
+  let next=tag
+    .replace(/\s+srcset=(['"])[\s\S]*?\1/gi,'')
+    .replace(/\s+data-src=(['"])[\s\S]*?\1/gi,'');
+  if(/\bsrc=(['"])[^'"]*\1/i.test(next)) next=next.replace(/\bsrc=(['"])[^'"]*\1/i,`src="${src}"`);
+  else next=next.replace(/<img\b/i,`<img src="${src}"`);
+  if(!/\balt=/i.test(next)) next=next.replace(/<img\b/i,`<img alt="${alt}"`);
+  return next;
+}
+
+function applyRule(html, rule){
+  let out=html;
+  let cursor=0;
+  while(cursor<out.length){
+    const low=out.toLowerCase();
+    let hit=-1;
+    for(const term of rule.terms){
+      const i=low.indexOf(term.toLowerCase(),cursor);
+      if(i!==-1 && (hit===-1 || i<hit)) hit=i;
     }
-    return block;
-  });
+    if(hit===-1) break;
+
+    // Busca la imagen más cercana al nombre del producto. En nuestros hubs la imagen suele ir antes del título,
+    // pero algunas plantillas la colocan después. Limitamos la distancia para no tocar una tarjeta vecina.
+    const prevStart=low.lastIndexOf('<img',hit);
+    const prevEnd=prevStart>=0?out.indexOf('>',prevStart):-1;
+    const nextStart=low.indexOf('<img',hit);
+    const nextEnd=nextStart>=0?out.indexOf('>',nextStart):-1;
+    const prevDist=prevStart>=0?hit-prevStart:Infinity;
+    const nextDist=nextStart>=0?nextStart-hit:Infinity;
+    let start=-1,end=-1;
+    if(prevDist<=3200 || nextDist<=3200){
+      if(prevDist<=nextDist){start=prevStart;end=prevEnd;} else {start=nextStart;end=nextEnd;}
+    }
+    if(start>=0 && end>start){
+      const tag=out.slice(start,end+1);
+      if(!tag.includes(rule.src)){
+        const replacement=replaceSrcInTag(tag,rule.src,rule.terms[0]);
+        out=out.slice(0,start)+replacement+out.slice(end+1);
+        cursor=hit+rule.terms[0].length;
+        continue;
+      }
+    }
+    cursor=hit+1;
+  }
+  return out;
 }
 
 let changed=0;
 for(const file of await files(ROOT)){
   const old=await fs.readFile(file,'utf8');
-  const next=replaceCardImages(old);
+  let next=old;
+  for(const rule of rules) next=applyRule(next,rule);
   if(next!==old){ await fs.writeFile(file,next); changed++; }
 }
 
-// Centraliza también el catálogo para que scripts posteriores y páginas dinámicas usen exactamente los mismos assets.
 const catalogPath=path.join(ROOT,'assets','affiliate-overrides.json');
 try{
   const data=JSON.parse(await fs.readFile(catalogPath,'utf8'));
@@ -62,4 +91,4 @@ try{
   await fs.writeFile(catalogPath,JSON.stringify(data,null,2)+'\n');
 }catch(e){ console.warn('No se pudo actualizar affiliate-overrides:',e.message); }
 
-console.log(`✓ Imágenes aprobadas aplicadas en ${changed} HTML.`);
+console.log(`✓ Fotos aprobadas aplicadas por proximidad de producto en ${changed} HTML.`);
