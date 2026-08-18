@@ -20,8 +20,8 @@ const products = {
     {url:'https://dam.delonghi.com/902x902/assets/223655', min:8000}
   ],
   'philips-5500-v4.png': [
-    {url:'https://images.philips.com/is/image/philipsconsumer/vrs_985a5521_0beb_4817_914c3fe3bfafc0f8?%24png%24=&fit=constrain&hei=1000&wid=1000', min:30000},
-    {url:'https://images.philips.com/is/image/philipsconsumer/vrs_985a5521_0beb_4817_914c3fe3bfafc0f8?%24png%24=&fit=constrain&hei=410&wid=410', min:12000}
+    {url:'https://images.philips.com/is/image/philipsconsumer/vrs_985a5521_0beb_4817_914c3fe3bfafc0f8?%24png%24=&fit=constrain&hei=1000&wid=1000', min:5000},
+    {url:'https://images.philips.com/is/image/philipsconsumer/vrs_985a5521_0beb_4817_914c3fe3bfafc0f8?%24png%24=&fit=constrain&hei=410&wid=410', min:4000}
   ],
   'jbl-flip6-v1.png': [
     {url:'https://global.jbl.com/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw4e91d6eb/1_JBL_FLIP6_HERO_BLACK_29391_x2.png?sh=1000&sw=1000', min:20000}
