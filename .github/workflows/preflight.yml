@@ -23,6 +23,7 @@ jobs:
           node scripts/weekly-inject.mjs
           node scripts/fix-static-images.mjs
           node scripts/fix-home-gift-images.mjs
+          node scripts/normalize-review-images.mjs
           node scripts/seo-build.mjs
           node scripts/inject-affiliate-catalog.mjs
           node scripts/inject-product-image-fixes.mjs

@@ -4,31 +4,19 @@ import path from 'node:path';
 const outDir = path.resolve('assets/approved');
 await fs.mkdir(outDir, { recursive: true });
 
-// Fuentes exactas de producto. Las cafeteras principales recuperan las imágenes
-// usadas en la home validada el 10/08/2026; productos frágiles se alojan localmente.
 const products = {
-  'magnifica-evo-v3.jpg': [
-    {url:'https://dam.delonghi.com/902x902/assets/225625', min:8000}
-  ],
-  'philips-3300-v3.jpg': [
-    {url:'https://us.home-appliances.philips/cdn/shop/files/3300_2_3000x3000_006594e4-c53f-426d-b9d6-04c3bf61a317_1946x.jpg?v=1765219594', min:60000}
-  ],
-  'rivelia-v3.jpg': [
-    {url:'https://dam.delonghi.com/902x902/assets/269456', min:8000}
-  ],
-  'magnifica-s-v3.jpg': [
-    {url:'https://dam.delonghi.com/902x902/assets/223655', min:8000}
-  ],
+  'magnifica-evo-v3.jpg': [{url:'https://dam.delonghi.com/902x902/assets/225625', min:8000}],
+  'philips-3300-v3.jpg': [{url:'https://us.home-appliances.philips/cdn/shop/files/3300_2_3000x3000_006594e4-c53f-426d-b9d6-04c3bf61a317_1946x.jpg?v=1765219594', min:60000}],
+  'rivelia-v3.jpg': [{url:'https://dam.delonghi.com/902x902/assets/269456', min:8000}],
+  'magnifica-s-v3.jpg': [{url:'https://dam.delonghi.com/902x902/assets/223655', min:8000}],
   'philips-5500-v4.png': [
     {url:'https://images.philips.com/is/image/philipsconsumer/vrs_985a5521_0beb_4817_914c3fe3bfafc0f8?%24png%24=&fit=constrain&hei=1000&wid=1000', min:5000},
     {url:'https://images.philips.com/is/image/philipsconsumer/vrs_985a5521_0beb_4817_914c3fe3bfafc0f8?%24png%24=&fit=constrain&hei=410&wid=410', min:4000}
   ],
-  'jbl-flip6-v1.png': [
-    {url:'https://global.jbl.com/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw4e91d6eb/1_JBL_FLIP6_HERO_BLACK_29391_x2.png?sh=1000&sw=1000', min:20000}
-  ],
-  'ninja-af400-v1.png': [
-    {url:'https://kodutarvik.ee/wp-content/uploads/2023/11/Ninja-Foodi-MAX-Dual-Zone-AF400EUCP.png', min:20000}
-  ]
+  'jbl-clip5-v1.jpg': [{url:'https://m.media-amazon.com/images/I/41jYyKRVqmL._AC_CX679_.jpg', min:12000}],
+  'jbl-flip6-v1.png': [{url:'https://global.jbl.com/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw4e91d6eb/1_JBL_FLIP6_HERO_BLACK_29391_x2.png?sh=1000&sw=1000', min:20000}],
+  'sony-ch720n-v1.jpg': [{url:'https://m.media-amazon.com/images/I/51rpbVmi9XL._AC_SL1200_.jpg', min:20000}],
+  'ninja-af400-v1.png': [{url:'https://kodutarvik.ee/wp-content/uploads/2023/11/Ninja-Foodi-MAX-Dual-Zone-AF400EUCP.png', min:20000}]
 };
 
 async function fetchOne(file, candidates) {
