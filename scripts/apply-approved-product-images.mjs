@@ -7,7 +7,9 @@ const rules = [
   { terms:['philips serie 3300 lattego','philips 3300 lattego'], src:'/assets/approved/philips-3300-v3.jpg' },
   { terms:['de’longhi rivelia',"de'longhi rivelia",'delonghi rivelia'], src:'/assets/approved/rivelia-v3.jpg' },
   { terms:['de’longhi magnifica s',"de'longhi magnifica s",'delonghi magnifica s'], src:'/assets/approved/magnifica-s-v3.jpg' },
-  { terms:['philips serie 5500 lattego','philips 5500 lattego'], src:'/assets/approved/philips-5500-v4.png' }
+  { terms:['philips serie 5500 lattego','philips 5500 lattego'], src:'/assets/approved/philips-5500-v4.png' },
+  { terms:['ninja foodi max af400','ninja af400'], src:'/assets/approved/ninja-af400-v1.png' },
+  { terms:['jbl flip 6'], src:'/assets/approved/jbl-flip6-v1.png' }
 ];
 const legacyMap={
   '/assets/images/product-magnifica-evo.webp':'/assets/approved/magnifica-evo-v3.jpg',
@@ -44,5 +46,8 @@ for(const file of await files(ROOT)){
 }
 
 const catalogPath=path.join(ROOT,'assets','affiliate-overrides.json');
-try{const data=JSON.parse(await fs.readFile(catalogPath,'utf8'));const map={'delonghi-magnifica-evo':'/assets/approved/magnifica-evo-v3.jpg','philips-3300':'/assets/approved/philips-3300-v3.jpg','delonghi-rivelia':'/assets/approved/rivelia-v3.jpg','delonghi-magnifica-s':'/assets/approved/magnifica-s-v3.jpg','philips-5500':'/assets/approved/philips-5500-v4.png'};for(const [k,src] of Object.entries(map))if(data[k])Object.assign(data[k],{image:src,imageLocked:true,imageSource:'approved-home-20260810'});await fs.writeFile(catalogPath,JSON.stringify(data,null,2)+'\n');}catch(e){console.warn('No se pudo actualizar affiliate-overrides:',e.message);}
-console.log(`✓ Fotos aprobadas aplicadas en ${changed} HTML.`);
+try{const data=JSON.parse(await fs.readFile(catalogPath,'utf8'));const map={'delonghi-magnifica-evo':'/assets/approved/magnifica-evo-v3.jpg','philips-3300':'/assets/approved/philips-3300-v3.jpg','delonghi-rivelia':'/assets/approved/rivelia-v3.jpg','delonghi-magnifica-s':'/assets/approved/magnifica-s-v3.jpg','philips-5500':'/assets/approved/philips-5500-v4.png','ninja-af400':'/assets/approved/ninja-af400-v1.png'};for(const [k,src] of Object.entries(map))if(data[k])Object.assign(data[k],{image:src,imageLocked:true,imageSource:'approved-local'});await fs.writeFile(catalogPath,JSON.stringify(data,null,2)+'\n');}catch(e){console.warn('No se pudo actualizar affiliate-overrides:',e.message);}
+
+const productsPath=path.join(ROOT,'assets','products.json');
+try{const data=JSON.parse(await fs.readFile(productsPath,'utf8'));if(data.products?.['jbl-flip-6'])Object.assign(data.products['jbl-flip-6'],{image:'/assets/approved/jbl-flip6-v1.png',imageLocked:true,imageSource:'approved-jbl-official'});await fs.writeFile(productsPath,JSON.stringify(data,null,2)+'\n');}catch(e){console.warn('No se pudo fijar JBL Flip 6 en products:',e.message);}
+console.log(`✓ Fotos aprobadas y productos frágiles fijados localmente en ${changed} HTML.`);
