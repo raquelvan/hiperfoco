@@ -5,7 +5,7 @@ const checks=[
   ['Philips Serie 3300 LatteGo','/assets/approved/philips-3300-v3.jpg',60000],
   ['De’Longhi Rivelia','/assets/approved/rivelia-v3.jpg',8000],
   ['De’Longhi Magnifica S','/assets/approved/magnifica-s-v3.jpg',8000],
-  ['Philips Serie 5500 LatteGo','/assets/approved/philips-5500-v4.png',12000]
+  ['Philips Serie 5500 LatteGo','/assets/approved/philips-5500-v4.png',5000]
 ];
 const forbidden=[
   '/assets/approved/magnifica-evo.jpg','/assets/approved/philips-3300.jpg','/assets/approved/rivelia.jpg','/assets/approved/magnifica-s.jpg',
@@ -28,4 +28,4 @@ for(const [,src,min] of checks){
   try{const st=await fs.stat(file);if(st.size<min)errors.push(`${file}: ${st.size} bytes, por debajo de ${min}`);}catch{errors.push(`${file}: falta el asset aprobado`)}
 }
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('✓ Home, Reseñas y Café usan exclusivamente fotos aprobadas y Philips 5500 PNG oficial.');
+console.log('✓ Home, Reseñas y Café usan exclusivamente fotos aprobadas; Philips 5500 oficial sin falsos positivos por compresión.');
