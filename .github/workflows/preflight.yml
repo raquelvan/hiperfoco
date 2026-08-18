@@ -50,19 +50,31 @@ jobs:
           exit 1
       - name: Instalar navegador QA
         if: github.event_name == 'pull_request'
-        run: npx -y playwright@1.55.0 install --with-deps chromium
+        run: npx -y playwright@1.55.0 install chromium
       - name: Capturas visuales de preview
         if: github.event_name == 'pull_request'
         run: |
           URL="https://deploy-preview-${{ github.event.number }}--hiperfoco.netlify.app"
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL" qa-home-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page "$URL" qa-home-mobile.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL/regalos/" qa-regalos-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page "$URL/regalos/" qa-regalos-mobile.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL/reviews/" qa-reviews-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page "$URL/reviews/" qa-reviews-mobile.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page "$URL/categoria/cafe.html" qa-cafe-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page "$URL/categoria/cafe.html" qa-cafe-mobile.png
+          shot () {
+            NAME="$1"; SIZE="$2"; PATHNAME="$3"
+            npx -y playwright@1.55.0 screenshot --browser=chromium --viewport-size="$SIZE" --full-page "$URL$PATHNAME" "$NAME.png"
+          }
+          shot qa-home-desktop "1440,1000" "/"
+          shot qa-home-mobile "390,844" "/"
+          shot qa-regalos-desktop "1440,1000" "/regalos/"
+          shot qa-regalos-mobile "390,844" "/regalos/"
+          shot qa-reviews-desktop "1440,1000" "/reviews/"
+          shot qa-reviews-mobile "390,844" "/reviews/"
+          shot qa-cafe-desktop "1440,1000" "/categoria/cafe.html"
+          shot qa-cafe-mobile "390,844" "/categoria/cafe.html"
+          shot qa-categorias-desktop "1440,1000" "/categoria/"
+          shot qa-categorias-mobile "390,844" "/categoria/"
+          shot qa-comparativas-desktop "1440,1000" "/comparativas/"
+          shot qa-comparativas-mobile "390,844" "/comparativas/"
+          shot qa-guias-desktop "1440,1000" "/guias/"
+          shot qa-guias-mobile "390,844" "/guias/"
+          shot qa-selecciones-desktop "1440,1000" "/selecciones/"
+          shot qa-selecciones-mobile "390,844" "/selecciones/"
       - name: Guardar capturas QA
         if: always() && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
