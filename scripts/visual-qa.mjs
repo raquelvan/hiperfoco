@@ -2,7 +2,28 @@ import { chromium } from 'playwright';
 
 const base=(process.argv[2]||'').replace(/\/$/,'');
 if(!base) throw new Error('Falta URL de preview');
-const pages=[['home','/'],['regalos','/regalos/'],['reviews','/reviews/'],['cafe','/categoria/cafe.html'],['categorias','/categoria/'],['comparativas','/comparativas/'],['guias','/guias/'],['selecciones','/selecciones/'],['review-magnifica-s','/reviews/delonghi-magnifica-s.html'],['review-philips-3300','/reviews/philips-3300-lattego.html']];
+const pages=[
+  ['home','/'],
+  ['regalos','/regalos/'],
+  ['reviews','/reviews/'],
+  ['cafe','/categoria/cafe.html'],
+  ['categorias','/categoria/'],
+  ['comparativas','/comparativas/'],
+  ['guias','/guias/'],
+  ['selecciones','/selecciones/'],
+  ['contacto','/contacto.html'],
+  ['apoyar','/apoyar.html'],
+  ['review-magnifica-evo','/reviews/delonghi-magnifica-evo.html'],
+  ['review-magnifica-s','/reviews/delonghi-magnifica-s.html'],
+  ['review-rivelia','/reviews/delonghi-rivelia.html'],
+  ['review-philips-3300','/reviews/philips-3300-lattego.html'],
+  ['review-philips-5500','/reviews/philips-5500-lattego.html'],
+  ['review-jbl-clip-5','/reviews/jbl-clip-5.html'],
+  ['review-jbl-flip-6','/reviews/jbl-flip-6.html'],
+  ['review-sony-ch720n','/reviews/sony-wh-ch720n.html'],
+  ['review-ninja-af400','/reviews/ninja-af400.html'],
+  ['review-nespresso-vertuo-plus','/reviews/nespresso-vertuo-plus.html']
+];
 const sizes=[['desktop',{width:1440,height:1000}],['mobile',{width:390,height:844}]];
 const browser=await chromium.launch({headless:true});
 const failures=[];
@@ -33,7 +54,12 @@ for(const [label,viewport] of sizes){
         checks.homeGuides=guides?[...guides.querySelectorAll('.guide-grid>.card')].filter(c=>c.querySelector('.guide-image img')).length:0;
         checks.homeGifts=gifts?[...gifts.querySelectorAll('.gifts>.gift')].filter(c=>c.querySelector('.gift-image img')).length:0;
       }
-      if(pageName.startsWith('review-')){checks.budgetImages=document.querySelectorAll('.budget-compact-wrap .money img,.budget-compact-wrap .hf-auto-product-media').length;checks.heroImages=document.querySelectorAll('.review-product img').length;checks.heroWrong=[...document.querySelectorAll('.review-product img')].filter(img=>/gift-|guide-/i.test(img.currentSrc||img.src)).length;}
+      if(pageName.startsWith('review-')){
+        checks.budgetImages=document.querySelectorAll('.budget-compact-wrap .money img,.budget-compact-wrap .hf-auto-product-media').length;
+        checks.heroImages=document.querySelectorAll('.review-product img').length;
+        checks.heroWrong=[...document.querySelectorAll('.review-product img')].filter(img=>/gift-|guide-/i.test(img.currentSrc||img.src)).length;
+        checks.approvedTemplate=Boolean(document.querySelector('.review-hero')&&document.querySelector('.review-score')&&document.querySelector('#precios'));
+      }
       if(pageName==='reviews')checks.reviewCardsMissing=[...document.querySelectorAll('[data-review-card],.reviews-grid>.card,.review-grid>.card')].filter(c=>!c.querySelector('img')).length;
       if(pageName==='comparativas')checks.comparisonMissing=[...document.querySelectorAll('.hub-card')].filter(c=>!c.querySelector('img')).length;
       if(pageName==='cafe')checks.cafeMissing=[...document.querySelectorAll('.hub-card,.product-page-card,.reviewCard')].filter(c=>/Magnifica|Philips|Rivelia/i.test(c.textContent)&&!c.querySelector('img')).length;
@@ -49,7 +75,12 @@ for(const [label,viewport] of sizes){
       if(result.checks.homeGuides!==5)failures.push(`${name}-${label}: Guías populares debe tener 5 tarjetas con foto y tiene ${result.checks.homeGuides}`);
       if(result.checks.homeGifts!==6)failures.push(`${name}-${label}: Regalos debe tener 6 tarjetas con foto y tiene ${result.checks.homeGifts}`);
     }
-    if(name.startsWith('review-')){if(result.checks.budgetImages!==0)failures.push(`${name}-${label}: Qué opción elegir contiene fotos automáticas (${result.checks.budgetImages})`);if(result.checks.heroImages!==1)failures.push(`${name}-${label}: hero debe tener exactamente 1 foto (${result.checks.heroImages})`);if(result.checks.heroWrong!==0)failures.push(`${name}-${label}: hero usa imagen editorial en vez del producto`);}
+    if(name.startsWith('review-')){
+      if(result.checks.budgetImages!==0)failures.push(`${name}-${label}: Qué opción elegir contiene fotos automáticas (${result.checks.budgetImages})`);
+      if(result.checks.heroImages!==1)failures.push(`${name}-${label}: hero debe tener exactamente 1 foto (${result.checks.heroImages})`);
+      if(result.checks.heroWrong!==0)failures.push(`${name}-${label}: hero usa imagen editorial en vez del producto`);
+      if(!result.checks.approvedTemplate)failures.push(`${name}-${label}: no coincide con la estructura visual de review aprobada`);
+    }
     if(result.checks.reviewCardsMissing>0)failures.push(`${name}-${label}: ${result.checks.reviewCardsMissing} reviews sin foto`);
     if(result.checks.comparisonMissing>0)failures.push(`${name}-${label}: ${result.checks.comparisonMissing} comparativas sin foto`);
     if(result.checks.cafeMissing>0)failures.push(`${name}-${label}: ${result.checks.cafeMissing} cafeteras sin foto`);
@@ -60,4 +91,4 @@ for(const [label,viewport] of sizes){
 }
 await browser.close();
 if(failures.length){console.error('\nQA VISUAL FALLIDA\n'+failures.join('\n'));process.exit(1)}
-console.log('✓ QA visual completa: desktop/móvil, imágenes cargadas, secciones completas, sin thumbnails legacy ni overflow.');
+console.log('✓ QA visual completa: desktop/móvil, imágenes cargadas, secciones completas, plantilla de reviews aprobada, sin thumbnails legacy ni overflow.');
