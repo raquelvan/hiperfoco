@@ -24,6 +24,7 @@ jobs:
           node scripts/fix-static-images.mjs
           node scripts/fix-home-gift-images.mjs
           node scripts/normalize-review-images.mjs
+          node scripts/site-integrity-fixes.mjs
           node scripts/seo-build.mjs
           node scripts/inject-affiliate-catalog.mjs
           node scripts/inject-product-image-fixes.mjs
@@ -57,6 +58,9 @@ jobs:
       - name: QA visual responsive con scroll real
         if: github.event_name == 'pull_request'
         run: node scripts/visual-qa.mjs "https://deploy-preview-${{ github.event.number }}--hiperfoco.netlify.app"
+      - name: Auditar plantilla aprobada de reviews
+        if: always() && github.event_name == 'pull_request'
+        run: node scripts/review-template-audit.mjs
       - name: Guardar capturas QA
         if: always() && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
