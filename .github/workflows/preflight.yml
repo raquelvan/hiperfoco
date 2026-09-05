@@ -57,6 +57,9 @@ jobs:
       - name: QA visual responsive con scroll real
         if: github.event_name == 'pull_request'
         run: node scripts/visual-qa.mjs "https://deploy-preview-${{ github.event.number }}--hiperfoco.netlify.app"
+      - name: Auditar plantilla aprobada de reviews
+        if: github.event_name == 'pull_request'
+        run: node scripts/review-template-audit.mjs
       - name: Guardar capturas QA
         if: always() && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
