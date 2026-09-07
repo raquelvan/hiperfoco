@@ -1,9 +1,7 @@
 (()=>{
-  const FALLBACKS={cafe:'/assets/images/gift-cafe.webp',gaming:'/assets/images/gift-gamers.webp',tecnologia:'/assets/images/gift-casa.webp',viajes:'/assets/images/gift-viajeros.webp',cocina:'/assets/images/gift-cocina.webp',default:'/assets/images/gift-todo.webp'};
   const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
   let catalog=null;
 
-  function fallbackFor(product){return FALLBACKS[product?.category]||FALLBACKS.default;}
   function allProducts(){return Object.entries(catalog?.products||{});}
   function matchProduct(name){
     const n=norm(name);if(!n)return null;
@@ -19,16 +17,28 @@
     return bestScore>=10?best:null;
   }
 
+  function neutralizeImage(img){
+    if(!img)return;
+    img.removeAttribute('src');
+    img.removeAttribute('srcset');
+    img.classList.add('product-image-pending');
+    img.alt=img.alt||'Imagen exacta pendiente de verificación';
+    const media=img.parentElement;
+    if(media&&!media.querySelector('.product-image-pending-label')){
+      const label=document.createElement('span');
+      label.className='product-image-pending-label';
+      label.textContent='Imagen exacta pendiente de verificación';
+      media.appendChild(label);
+    }
+  }
+
   function ensureImage(img,product){
     if(!img)return;
     const desired=product?.image||'';
-    if(desired&&img.src!==desired){img.dataset.previousSrc=img.src;img.src=desired;}
-    img.onerror=()=>{
-      const fallback=fallbackFor(product);
-      if(img.src.endsWith(fallback))return;
-      img.src=fallback;
-      img.classList.add('affiliate-fallback-image');
-    };
+    if(!desired){neutralizeImage(img);return;}
+    if(img.src!==desired){img.dataset.previousSrc=img.src;img.src=desired;}
+    img.style.objectFit='contain';
+    img.onerror=()=>neutralizeImage(img);
   }
 
   function ensureAffiliateButton(card,product){
@@ -52,8 +62,9 @@
     const grid=document.querySelector('.product-page-grid');if(!grid||grid.querySelector('[data-product-key="philips-5500"]')||[...grid.querySelectorAll('h3')].some(h=>/5500 lattego/i.test(h.textContent)))return;
     const p=catalog?.products?.['philips-5500'];if(!p)return;
     const a=document.createElement('a');a.className='page-card product-page-card';a.href=p.review||'../reviews/philips-5500-lattego.html';a.dataset.productKey='philips-5500';
-    a.innerHTML=`<span class="page-product-media"><img src="${p.image||fallbackFor(p)}" alt="Philips Serie 5500 LatteGo EP5544/80 cafetera superautomática" loading="lazy" decoding="async"></span><div><h3>Philips Serie 5500 LatteGo</h3><p>Más recetas y perfiles para hogares con gustos distintos.</p><b>Abrir →</b></div>`;
-    grid.appendChild(a);ensureImage(a.querySelector('img'),p);
+    const media=p.image?`<span class="page-product-media"><img src="${p.image}" alt="Philips Serie 5500 LatteGo EP5544/80 cafetera superautomática" loading="lazy" decoding="async" style="object-fit:contain"></span>`:`<span class="page-product-media"><span class="product-image-pending-label">Imagen exacta pendiente de verificación</span></span>`;
+    a.innerHTML=`${media}<div><h3>Philips Serie 5500 LatteGo</h3><p>Más recetas y perfiles para hogares con gustos distintos.</p><b>Abrir →</b></div>`;
+    grid.appendChild(a);if(p.image)ensureImage(a.querySelector('img'),p);
   }
 
   function applyReviewPage(){
@@ -82,20 +93,6 @@
   function apply(){
     document.querySelectorAll('.gift4-product,.product-page-card,.review-grid .card').forEach(applyToCard);
     addPhilips5500ToCafe();applyReviewPage();
-    document.querySelectorAll('img').forEach(img=>{
-      if(img.dataset.globalFallback==='1')return;img.dataset.globalFallback='1';
-      const old=img.onerror;img.addEventListener('error',()=>{
-        if(img.dataset.productFallbackApplied==='1')return;
-        const card=img.closest('.gift4-product,.product-page-card,.review-grid .card');
-        const heading=card?.querySelector('h3')?.textContent;
-        const match=matchProduct(heading);
-        if(match?.p?.image&&img.src!==match.p.image){img.src=match.p.image;return;}
-        img.dataset.productFallbackApplied='1';
-        const pageCat=/cafe|philips|delonghi|nespresso/i.test(`${location.pathname} ${heading||''}`)?'cafe':/gamer|razer|8bitdo|lego/i.test(`${location.pathname} ${heading||''}`)?'gaming':'default';
-        img.src=FALLBACKS[pageCat];
-      });
-      if(typeof old==='function')img.addEventListener('error',old,{once:true});
-    });
   }
 
   async function init(){
