@@ -1,0 +1,19 @@
+/* Ajustes quirúrgicos derivados de QA visual. No cambian el diseño aprobado. */
+
+/* Hub de guías: las tarjetas destacadas con foto deben mantener imagen y texto en bloques separados. */
+.guide-featured-card:not(.main){position:relative!important;background:#fff!important;color:var(--ink)!important}
+.guide-featured-card:not(.main) .guide-featured-media{position:static!important;inset:auto!important;transform:none!important;width:100%!important;height:126px!important;min-height:126px!important;opacity:1!important;z-index:auto!important;background:#f2f6f4!important;overflow:hidden!important;padding:0!important}
+.guide-featured-card:not(.main) .guide-featured-media:before,.guide-featured-card:not(.main) .guide-featured-media:after{display:none!important}
+.guide-featured-card:not(.main) .guide-featured-media img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;opacity:1!important;filter:none!important}
+.guide-featured-card:not(.main) .guide-featured-copy{position:static!important;inset:auto!important;transform:none!important;display:flex!important;flex:1!important;flex-direction:column!important;background:#fff!important;color:var(--ink)!important;z-index:auto!important;text-shadow:none!important}
+.guide-featured-card:not(.main) .guide-featured-copy p{color:var(--muted)!important}
+
+/* Regalos en móvil: evita una lista interminable de cards gigantes sin comprometer lectura. */
+@media (min-width:361px) and (max-width:540px){
+  .gift-result-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .gift-result{min-width:0!important;min-height:154px!important;padding:12px!important}
+  .gift-result .gift-result-icon{width:31px!important;height:31px!important;margin-bottom:8px!important}
+  .gift-result h3{font-size:1rem!important;line-height:1.12!important}
+  .gift-result p{font-size:.67rem!important;line-height:1.38!important;margin-bottom:9px!important}
+  .gift-result b{font-size:.65rem!important}
+}
