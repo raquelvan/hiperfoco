@@ -54,6 +54,48 @@
   to = "/selecciones/limpiar-poco.html"
   status = 301
 
+# GSC ha descubierto variantes sin .html. Las consolidamos para que señales,
+# enlaces y futuras impresiones terminen siempre en la URL canónica del sitemap.
+[[redirects]]
+  from = "/categoria/cocina"
+  to = "/categoria/cocina.html"
+  status = 301
+
+[[redirects]]
+  from = "/comparativas/philips-3300-vs-5500"
+  to = "/comparativas/philips-3300-vs-5500.html"
+  status = 301
+
+[[redirects]]
+  from = "/guias/mejores-aspiradoras-sin-cable-2026"
+  to = "/guias/mejores-aspiradoras-sin-cable-2026.html"
+  status = 301
+
+[[redirects]]
+  from = "/guias/mejores-auriculares-inalambricos-2026"
+  to = "/guias/mejores-auriculares-inalambricos-2026.html"
+  status = 301
+
+[[redirects]]
+  from = "/guias/mejores-robots-aspiradores-2026"
+  to = "/guias/mejores-robots-aspiradores-2026.html"
+  status = 301
+
+[[redirects]]
+  from = "/regalos/quien-ya-tiene-de-todo"
+  to = "/regalos/quien-ya-tiene-de-todo.html"
+  status = 301
+
+[[redirects]]
+  from = "/regalos/regalos-para-hermana"
+  to = "/regalos/regalos-para-hermana.html"
+  status = 301
+
+[[redirects]]
+  from = "/regalos/regalos-para-novio"
+  to = "/regalos/regalos-para-novio.html"
+  status = 301
+
 [[headers]]
   for = "/*"
   [headers.values]
